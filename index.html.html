@@ -1,0 +1,1457 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Anodes Work Tracker</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;700;800&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+<style>
+body { font-family: 'Plus Jakarta Sans', sans-serif; background: #f1f5f9; margin:0;}
+
+.fixed-header {
+    position: sticky; top: 0; z-index: 50; padding: 1rem 2rem; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap;
+    background: rgba(255, 255, 255, 0.75); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
+    border-bottom: 1px solid rgba(203, 213, 225, 0.5); box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+}
+.fixed-header h1 {
+    font-size: 2rem; font-weight: 800; background: linear-gradient(90deg, #189e8a, #839e18);
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+}
+.greeting-text {
+    font-size: 1.125rem; font-weight: 700; background: linear-gradient(90deg, #1e3a8a, #3b82f6);
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+}
+.datetime-pill {
+    background: rgba(0, 0, 0, 0.05);
+    padding: 0.25rem 0.75rem;
+    border-radius: 9999px; /* Pill shape */
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: #475569;
+    white-space: nowrap;
+}
+.datetime-pill.time { /* Style for the time pill */
+    font-weight: 700;
+    color: #1e2937;
+    background: rgba(0, 0, 0, 0.08); /* Slightly darker bg for emphasis */
+}
+/* Styling for the compact month/year selectors in the admin panel */
+#monthSelector, #yearSelector, #reportMonthSelector, #reportYearSelector {
+    padding: 0.375rem 0.75rem;
+    padding-right: 2.25rem;
+    font-size: 0.875rem;
+    font-weight: 600;
+    border: 1px solid #e2e8f0;
+    border-radius: 0.375rem; /* Standard rounded corners */
+    background-position: right 0.6rem center;
+    box-shadow: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+    transition: all 0.2s ease-in-out;
+}
+#monthSelector:focus, #yearSelector:focus, #reportMonthSelector:focus, #reportYearSelector:focus {
+    outline: none;
+    border-color: #189e8a;
+    box-shadow: 0 0 0 3px rgba(24, 158, 138, 0.1); /* Adds a nice glow on click */
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(-10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+.login-card-animation {
+    animation: fadeIn 0.7s ease-out forwards;
+}
+
+.btn { padding:0.5rem 1rem; border-radius:0.5rem; font-weight:600; cursor:pointer; transition:all 0.3s; border: none; display: inline-flex; align-items: center; gap: 0.5rem; justify-content: center;}
+.btn-primary { background: linear-gradient(90deg, #189e8a, #839e18); color: white; }
+.btn-primary:hover { background: linear-gradient(90deg, #839e18, #189e8a); }
+.btn-secondary { background: rgba(0, 0, 0, 0.05); color: #1f2937; font-weight: 700; border: 1px solid rgba(0,0,0,0.1) }
+.btn-secondary:hover { background: rgba(0, 0, 0, 0.1); }
+.btn-gray { background: #e5e7eb; color: #1f2937; }
+.btn-gray:hover { background: #d1d5db; }
+.btn-pay { background: linear-gradient(90deg, #1e40af, #3b82f6); color: white; }
+.btn-pay:hover { background: linear-gradient(90deg, #3b82f6, #1e40af); }
+
+.earnings-card {
+    background: linear-gradient(135deg, #1e3a8a, #3b82f6); color: white; border-radius: 1rem; padding: 1.5rem; margin: 1rem 2rem;
+    box-shadow: 0 10px 20px rgba(0,0,0,0.2); position: relative; overflow: hidden; display: flex; flex-direction: column;
+    justify-content: space-between; min-height: 200px; font-family: 'Courier New', Courier, monospace;
+}
+.earnings-card::before {
+    content: '₹'; position: absolute; top: -20px; right: -20px; font-size: 12rem; font-weight: 700;
+    color: rgba(255, 255, 255, 0.05); z-index: 0;
+}
+.card-chip {
+    width: 50px; height: 40px; background: linear-gradient(135deg, #fbbf24, #f59e0b); border-radius: 0.25rem;
+    display: flex; align-items: center; justify-content: center;
+}
+.card-chip-line { width: 2px; height: 60%; background: #fde68a; }
+.card-chip::before, .card-chip::after { content: ''; width: 60%; height: 2px; background: #fde68a; position: absolute; }
+
+.current-earnings { font-size: 2.5rem; font-weight: 700; font-family: 'Plus Jakarta Sans', sans-serif;}
+.estimated-earnings { font-size: 1rem; opacity: 0.9; margin-top: 0.5rem; font-family: 'Plus Jakarta Sans', sans-serif;}
+.tile { cursor: pointer; transition: transform 0.2s, box-shadow 0.2s; border-radius: 0.75rem; padding: 1rem; display: flex; flex-direction: column; gap:0.25rem; position: relative; }
+.tile:hover { transform: scale(1.03); box-shadow: 0 6px 12px rgba(0,0,0,0.15); }
+.tile-icon { position: absolute; top: 1rem; right: 1rem; opacity: 0.15; font-size: 4rem; }
+.product-icon { display: inline-flex; align-items: center; gap: 0.5rem; }
+.product-icon .material-icons { font-size: 1.5rem; vertical-align: middle; color: #189e8a; }
+.modal { background: rgba(0,0,0,0.5); display: none; align-items: center; justify-content: center; position: fixed; inset: 0; z-index: 100; }
+.modal.show { display: flex; }
+.modal-content { background: #fff; border-radius: 0.75rem; max-width: 600px; width: 90%; padding: 1.5rem; box-shadow: 0 6px 12px rgba(0,0,0,0.2); display:flex; flex-direction:column; gap:1rem; max-height:90vh; overflow-y:auto;}
+input, select {
+    width: 100%; padding: 0.75rem 1rem; border: 2px solid #e5e7eb; border-radius: 0.75rem;
+    font-size: 1rem; transition: all 0.3s ease; background: white; color: #1f2937;
+}
+input:focus, select:focus {
+    outline: none; border-color: #189e8a; box-shadow: 0 0 0 3px rgba(24, 158, 138, 0.1); background: #f9fafb;
+}
+select {
+    appearance: none; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%23189e8a' stroke-width='2'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' d='M19 9l-7 7-7-7'%3E%3C/path%3E%3C/svg%3E");
+    background-repeat: no-repeat; background-position: right 0.75rem center; background-size: 1.25rem; padding-right: 2.5rem; cursor: pointer;
+}
+select:hover { border-color: #189e8a; background-color: #f9fafb; }
+input::placeholder { color: #9ca3af; }
+input[type="number"]::-webkit-inner-spin-button, input[type="number"]::-webkit-outer-spin-button { opacity: 1; }
+#toastContainer { position: fixed; top: 1rem; right: 1rem; z-index: 200; display: flex; flex-direction: column; gap: 0.5rem; }
+.toast { display: flex; align-items: center; gap: 0.5rem; padding: 0.75rem 1rem; border-radius: 0.75rem; color: white; font-weight: 500; box-shadow: 0 4px 12px rgba(0,0,0,0.2); animation: slide-in 0.3s ease-out; }
+@keyframes slide-in { from { opacity: 0; transform: translateY(-20px); } to { opacity: 1; transform: translateY(0); } }
+.toast-gradient { background: linear-gradient(90deg, #189e8a, #839e18); }
+.history-widget { max-height:150px; overflow-y:auto; border:1px solid #ddd; padding:0.5rem; border-radius:0.5rem; background:#f9fafb; font-size:0.875rem; }
+.qty-widget { background:#f0fdf4; padding:0.5rem; border-radius:0.5rem; font-weight:500; }
+.admin-section { background: white; border-radius: 1rem; padding: 1.5rem; margin: 1rem 0.5rem; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+.table-container { overflow-x: auto; margin-top: 1rem; }
+.admin-table { width: 100%; border-collapse: collapse; min-width: 600px; }
+.admin-table th { background: #f3f4f6; padding: 0.75rem; text-align: left; font-weight: 600; white-space: nowrap; }
+.admin-table td { padding: 0.75rem; border-bottom: 1px solid #e5e7eb; white-space: nowrap; }
+.completed-summary { background: #dcfce7; border: 2px solid #22c55e; border-radius: 0.75rem; padding: 1rem; margin: 1rem 0; text-align: center; }
+.completed-summary .days { color: #16a34a; font-weight: 700; font-size: 1.5rem; }
+.completed-summary .rupees { color: #16a34a; font-weight: 700; font-size: 1.5rem; }
+</style>
+</head>
+<body>
+
+<div id="app" class="flex flex-col">
+
+    <div id="loginScreen" class="flex flex-col items-center justify-center min-h-screen w-full bg-gradient-to-br from-teal-50 via-slate-50 to-green-50">
+        <div class="login-card-animation w-full max-w-sm p-8 space-y-6 bg-white/70 backdrop-blur-xl border border-white/30 rounded-2xl shadow-2xl">
+            
+            <div class="flex justify-center">
+                <div class="w-16 h-16 rounded-full bg-gradient-to-br from-[#189e8a] to-[#839e18] flex items-center justify-center shadow-lg">
+                    <span class="material-icons text-white text-4xl">task_alt</span>
+                </div>
+            </div>
+    
+            <h1 class="text-3xl font-bold text-center text-transparent bg-clip-text bg-gradient-to-r from-[#189e8a] to-[#6a8013]">Anodes Work Tracker</h1>
+            
+            <form id="loginForm" class="space-y-4">
+                <div class="flex items-center gap-3 bg-slate-100 p-3 rounded-lg border-2 border-transparent focus-within:border-[#189e8a] focus-within:ring-2 focus-within:ring-[#189e8a]/20 transition-all duration-300">
+                    <span class="material-icons text-gray-400">person</span>
+                    <input type="text" id="loginUser" placeholder="Username" class="w-full bg-transparent outline-none text-gray-800 font-medium placeholder:text-gray-400">
+                </div>
+    
+                <div class="flex items-center gap-3 bg-slate-100 p-3 rounded-lg border-2 border-transparent focus-within:border-[#189e8a] focus-within:ring-2 focus-within:ring-[#189e8a]/20 transition-all duration-300">
+                    <span class="material-icons text-gray-400">lock</span>
+                    <input type="password" id="loginPass" placeholder="Password/PIN" class="w-full bg-transparent outline-none text-gray-800 font-medium placeholder:text-gray-400">
+                </div>
+    
+                <button type="submit" class="w-full py-3 font-bold bg-gradient-to-r from-[#189e8a] to-[#839e18] text-white rounded-lg hover:shadow-lg hover:shadow-teal-500/40 transition-all duration-300">Login</button>
+                <p id="loginError" class="text-red-600 text-sm mt-2 text-center font-semibold"></p>
+            </form>
+            <p class="text-center text-gray-500 text-sm pt-4">Ver 3.0.1</p>
+        </div>
+    </div>
+
+    <div id="adminApp" class="hidden flex-col w-full h-full">
+        <div class="fixed-header">
+            <h1>Admin Dashboard</h1>
+            <div class="flex items-center gap-4">
+                <div class="flex items-center gap-2">
+                    <span id="date-display-admin" class="datetime-pill"></span>
+                    <span id="time-display-admin" class="datetime-pill time"></span>
+                </div>
+                <button id="adminLogoutBtn" class="btn btn-secondary hidden">Log Out</button>
+            </div>
+        </div>
+        <div id="admin-content-area" class="p-4">
+            <div class="flex gap-2 mb-4 flex-wrap">
+                <button class="btn btn-primary" onclick="showAdminSection('report')">Report</button>
+                <button class="btn btn-primary" onclick="showAdminSection('payment')">Payment</button>
+                <div class="relative">
+                    <button id="manageBtn" class="btn btn-primary">
+                        <span>Manage</span>
+                        <span class="material-icons text-base">arrow_drop_down</span>
+                    </button>
+                    <div id="manageDropdown" class="hidden absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg z-20 ring-1 ring-black ring-opacity-5">
+                        <a href="#" onclick="showAdminSection('workorders'); closeManageDropdown(); return false;" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Work Orders</a>
+                        <a href="#" onclick="showAdminSection('products'); closeManageDropdown(); return false;" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Products</a>
+                        <a href="#" onclick="showAdminSection('users'); closeManageDropdown(); return false;" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Users</a>
+                        <hr class="my-1">
+                        <a href="#" onclick="clearData(); closeManageDropdown(); return false;" class="block px-4 py-2 text-sm font-medium text-red-600 hover:bg-red-50">
+                            <span class="material-icons text-base align-middle mr-1">delete_sweep</span>
+                            Clear Data
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <div id="adminPaymentSection" class="admin-section hidden">
+                <div class="bg-slate-100 p-4 rounded-lg mb-6">
+                    <div class="flex flex-wrap justify-between items-center gap-4">
+                        <h2 class="text-2xl font-bold">Monthly Payment</h2>
+                        <div class="flex gap-2 items-center">
+                            <select id="monthSelector"></select>
+                            <select id="yearSelector"></select>
+                        </div>
+                    </div>
+                </div>
+                <div id="paymentCardContainer" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4"></div>
+            </div>
+
+            <div id="adminReportSection" class="admin-section hidden">
+                <div class="bg-slate-100 p-4 rounded-lg mb-6">
+                    <div class="flex flex-wrap justify-between items-start gap-4">
+                        <div>
+                            <h2 class="text-2xl font-bold">Progress Report</h2>
+                            <div id="reportGrandTotalDisplay" class="mt-2"></div>
+                        </div>
+                        <div class="flex gap-2 items-center">
+                            <select id="reportMonthSelector"></select>
+                            <select id="reportYearSelector"></select>
+                        </div>
+                    </div>
+                </div>
+                <div id="reportCardContainer" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4"></div>
+            </div>
+            
+            <div id="adminUsersSection" class="admin-section hidden">
+                <div class="bg-slate-100 p-4 rounded-lg mb-6">
+                    <h2 class="text-2xl font-bold">Manage Users</h2>
+                </div>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">User Name</label>
+                        <input type="text" id="newUserName" placeholder="Enter user name">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">PIN</label>
+                        <input type="text" id="newUserPin" placeholder="Enter 4-digit PIN">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">UPI ID (VPA)</label>
+                        <input type="text" id="newUserUpiId" placeholder="e.g., username@okhdfcbank">
+                    </div>
+                </div>
+                <button class="btn btn-primary" onclick="createUser()">Create User</button>
+                <div class="table-container mt-6">
+                    <table class="admin-table">
+                        <thead><tr><th>Name</th><th>PIN</th><th>UPI ID</th></tr></thead>
+                        <tbody id="usersTableBody"></tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div id="adminProductsSection" class="admin-section hidden">
+                <div class="bg-slate-100 p-4 rounded-lg mb-6">
+                    <h2 class="text-2xl font-bold">Manage Products</h2>
+                </div>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Product Name</label>
+                        <input type="text" id="newProductName" placeholder="Enter product name">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Price per Unit (₹)</label>
+                        <input type="number" id="newProductPrice" placeholder="Enter price" min="0" step="0.01">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Icon Name <a href="https://fonts.google.com/icons" target="_blank" class="text-[#189e8a] text-xs">(Browse Icons)</a></label>
+                        <input type="text" id="newProductIcon" placeholder="e.g., memory, battery_charging_full">
+                    </div>
+                </div>
+                <button class="btn btn-primary" onclick="createProduct()">Create Product</button>
+                <div class="table-container mt-6">
+                    <table class="admin-table">
+                        <thead><tr><th>Icon</th><th>Product Name</th><th>Price (₹)</th></tr></thead>
+                        <tbody id="productsTableBody"></tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div id="adminWorkOrdersSection" class="admin-section hidden">
+                <div class="bg-slate-100 p-4 rounded-lg mb-6">
+                    <h2 class="text-2xl font-bold">Manage Work Orders</h2>
+                </div>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Select User</label>
+                        <select id="newOrderUser"><option value="">Choose a user...</option></select>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Select Product</label>
+                        <select id="newOrderProduct"><option value="">Choose a product...</option></select>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Total Quantity</label>
+                        <input type="number" id="newOrderQty" placeholder="Enter quantity" min="1">
+                    </div>
+                </div>
+                <button class="btn btn-primary" onclick="createWorkOrder()">Create Work Order</button>
+                <div class="table-container mt-6">
+                    <table class="admin-table">
+                        <thead><tr><th>User</th><th>Product</th><th>Total Qty</th><th>Completed</th><th>Pending</th><th>Created</th></tr></thead>
+                        <tbody id="workOrdersTableBody"></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="userApp" class="hidden flex-col w-full h-full">
+        <div class="fixed-header">
+            <div class="flex-grow flex items-center gap-4">
+                <h1>Anodes Work Tracker</h1>
+            </div>
+            <button id="userLogoutBtn" class="btn btn-secondary hidden">Log Out</button>
+            <h2 id="greeting" class="w-full mt-2 greeting-text"></h2>
+            <div class="w-full flex items-center gap-2 mt-1">
+                <span id="date-display-user" class="datetime-pill"></span>
+                <span id="time-display-user" class="datetime-pill time"></span>
+            </div>
+        </div>
+    
+        <div id="earningsCard" class="earnings-card">
+            <div class="flex justify-between items-start z-10">
+                <div class="card-chip"><div class="card-chip-line"></div></div>
+                <div class="font-bold text-lg">Anodes Pay</div>
+            </div>
+            <div class="z-10 text-center">
+                <div class="text-sm opacity-70 tracking-widest">CURRENT EARNINGS</div>
+                <div class="current-earnings" id="currentEarnings">₹0.00</div>
+            </div>
+            <div class="z-10 flex justify-between items-end">
+                <div>
+                    <div class="text-xs opacity-70">CARD HOLDER</div>
+                    <div id="cardHolderName" class="font-medium tracking-wider"></div>
+                </div>
+                <div id="estimatedEarnings" class="estimated-earnings text-right text-xs"></div>
+            </div>
+        </div>
+    
+        <div class="px-4 pb-2 flex justify-between items-center">
+            <button id="viewHistoryBtn" class="bg-white text-slate-700 shadow-sm border border-slate-200 hover:bg-slate-50 text-xs font-bold py-1 px-3 rounded-full flex items-center gap-1 transition-all duration-300">
+                <span class="material-icons text-sm">history</span>
+                View History
+            </button>
+            <div id="filterToggle" class="flex items-center bg-slate-200 p-1 rounded-full text-sm font-semibold">
+                <button id="toggleAllBtn" class="px-4 py-1 rounded-full shadow bg-white text-slate-800 transition-all duration-300">ALL</button>
+                <button id="toggleLiveBtn" class="px-4 py-1 rounded-full text-slate-500 transition-all duration-300">LIVE</button>
+            </div>
+        </div>
+    
+        <div id="workOrdersGrid" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 p-4 pt-0"></div>
+    </div>
+
+    <div id="workModal" class="modal">
+        <div class="modal-content">
+            <h2 id="modalTitle" class="text-xl font-bold mb-2 text-[#189e8a]"></h2>
+            <div id="completedSummary" class="completed-summary hidden"></div>
+            <div id="qtyDetails" class="qty-widget"></div>
+            <h3 class="font-bold mt-2">History</h3>
+            <div id="historyList" class="history-widget"></div>
+            <div id="updateSection" class="flex gap-2 mt-2">
+                <input type="number" id="todayCompleted" placeholder="Today's Completed Quantity" class="flex-1">
+                <button id="updateWorkBtn" class="btn btn-primary">Update</button>
+                <button id="closeModal" class="btn btn-gray">Cancel</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="historyModal" class="modal">
+        <div class="modal-content">
+            <div class="flex justify-between items-center mb-4">
+                <h2 class="text-xl font-bold text-[#189e8a]">Earnings History</h2>
+                <button id="closeHistoryModalBtn" class="text-gray-500 hover:text-gray-800">
+                    <span class="material-icons">close</span>
+                </button>
+            </div>
+            <div class="flex gap-2 p-3 bg-slate-100 rounded-lg">
+                <select id="historyMonthSelector" class="w-full"></select>
+            </div>
+            <div id="historyDetailsContainer" class="mt-4 min-h-[200px]">
+                <p class="text-center text-gray-500 mt-8">Please select a month and year to view details.</p>
+            </div>
+        </div>
+    </div>
+
+    <div id="toastContainer"></div>
+
+</div>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+import { getDatabase, ref, get, update, push, set } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
+
+const firebaseConfig = {
+    apiKey: "AIzaSyBlNO1_J3cVYIatnB_ZmHmWgXyYmCexIzg",
+    authDomain: "anodes-tracker.firebaseapp.com",
+    databaseURL: "https://anodes-tracker-default-rtdb.asia-southeast1.firebasedatabase.app",
+    projectId: "anodes-tracker",
+    storageBucket: "anodes-tracker.appspot.com",
+    messagingSenderId: "358839104115",
+    appId: "1:358839104115:web:e18ff1a123f58b0cc3b006",
+    measurementId: "G-5WNRDJJCBV"
+};
+
+const app = initializeApp(firebaseConfig);
+const db = getDatabase(app);
+
+const loginScreen = document.getElementById('loginScreen');
+const adminApp = document.getElementById('adminApp');
+const userApp = document.getElementById('userApp');
+const loginForm = document.getElementById('loginForm');
+const loginError = document.getElementById('loginError');
+const greetingEl = document.getElementById('greeting');
+const userLogoutBtn = document.getElementById('userLogoutBtn');
+const adminLogoutBtn = document.getElementById('adminLogoutBtn');
+const cardHolderNameEl = document.getElementById('cardHolderName');
+const currentEarningsEl = document.getElementById('currentEarnings');
+const estimatedEarningsEl = document.getElementById('estimatedEarnings');
+
+let currentUser = null;
+let isAdmin = false;
+let users = {};
+let products = {};
+let workOrders = [];
+let workOrderFilter = 'all'; 
+const monthNames = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+
+window.showAdminSection = showAdminSection;
+window.createUser = createUser;
+window.createProduct = createProduct;
+window.createWorkOrder = createWorkOrder;
+window.initiatePayment = initiatePayment;
+window.clearData = clearData;
+window.closeManageDropdown = () => {
+    document.getElementById('manageDropdown').classList.add('hidden');
+};
+
+loginForm.addEventListener('submit', async e=>{
+    e.preventDefault();
+    const username = document.getElementById('loginUser').value.trim();
+    const pass = document.getElementById('loginPass').value.trim();
+
+    if(username === 'Admin' && pass === '1234'){
+        isAdmin = true;
+        currentUser = { name: 'Admin' };
+        loginScreen.classList.add('hidden');
+        adminApp.classList.remove('hidden');
+        await loadAllData();
+        showAdminSection('report');
+        return;
+    }
+
+    const snap = await get(ref(db,'users'));
+    users = snap.exists()? snap.val() : {};
+    const foundUser = Object.entries(users).find(([id,u])=> u.name === username && u.pin===pass);
+    if(foundUser){
+        isAdmin = false;
+        currentUser = { id: foundUser[0], ...foundUser[1] };
+        loginScreen.classList.add('hidden');
+        userApp.classList.remove('hidden');
+        const hour = new Date().getHours();
+        let greet = "Hi";
+        if(hour<12) greet+=" Good Morning";
+        else if(hour<17) greet+=" Good Afternoon";
+        else greet+=" Good Evening";
+        greetingEl.textContent = `${greet}, ${currentUser.name}`;
+        cardHolderNameEl.textContent = currentUser.name.toUpperCase();
+
+        setupFilterToggle();
+        setupHistoryModal();
+        await loadProducts();
+        await loadWorkOrders();
+        updateEarnings();
+    } else {
+        loginError.textContent = 'Invalid Username or Password/PIN';
+    }
+});
+
+userLogoutBtn.addEventListener('click', logout);
+adminLogoutBtn.addEventListener('click', logout);
+
+function logout(){
+    currentUser = null;
+    isAdmin = false;
+    loginScreen.classList.remove('hidden');
+    adminApp.classList.add('hidden');
+    userApp.classList.add('hidden');
+    loginForm.reset();
+    loginError.textContent = '';
+}
+
+async function loadAllData(){
+    await loadUsers();
+    await loadProducts();
+    await loadWorkOrders();
+}
+
+async function loadUsers(){
+    const snap = await get(ref(db,'users'));
+    users = snap.exists()? snap.val() : {};
+}
+
+async function loadProducts(){
+    const snap = await get(ref(db,'products'));
+    products = snap.exists()? snap.val() : {};
+}
+
+async function loadWorkOrders(){
+    const snap = await get(ref(db,'workOrders'));
+    workOrders = snap.exists()? Object.entries(snap.val()).map(([id,wo])=>({...wo,id})) : [];
+    if(!isAdmin){
+        renderUserWorkOrders();
+    }
+}
+
+function showAdminSection(section){
+    document.querySelectorAll('.admin-section').forEach(s => s.classList.add('hidden'));
+    if(section === 'users'){
+        document.getElementById('adminUsersSection').classList.remove('hidden');
+        renderUsersTable();
+    } else if(section === 'products'){
+        document.getElementById('adminProductsSection').classList.remove('hidden');
+        renderProductsTable();
+    } else if(section === 'workorders'){
+        document.getElementById('adminWorkOrdersSection').classList.remove('hidden');
+        populateUserProductDropdowns();
+        renderWorkOrdersTable();
+    } else if(section === 'payment'){
+        document.getElementById('adminPaymentSection').classList.remove('hidden');
+        populateDateSelectors();
+        renderPaymentCards(parseInt(document.getElementById('yearSelector').value), parseInt(document.getElementById('monthSelector').value));
+    } else if (section === 'report') {
+        document.getElementById('adminReportSection').classList.remove('hidden');
+        setupReportSelectors(); 
+    }
+}
+
+function setupManageDropdown() {
+    const manageBtn = document.getElementById('manageBtn');
+    const manageDropdown = document.getElementById('manageDropdown');
+    
+    manageBtn.addEventListener('click', (event) => {
+        event.stopPropagation();
+        manageDropdown.classList.toggle('hidden');
+    });
+}
+setupManageDropdown();
+window.addEventListener('click', () => closeManageDropdown());
+
+function populateDateSelectors() {
+    const monthSelector = document.getElementById('monthSelector');
+    const yearSelector = document.getElementById('yearSelector');
+    const currentDate = new Date();
+    const currentYear = currentDate.getFullYear();
+    const currentMonth = currentDate.getMonth();
+
+    if(monthSelector.options.length > 0) return;
+
+    monthSelector.innerHTML = '';
+    monthNames.forEach((name, index) => {
+        const option = document.createElement('option');
+        option.value = index;
+        option.textContent = name;
+        if (index === currentMonth) option.selected = true;
+        monthSelector.appendChild(option);
+    });
+
+    yearSelector.innerHTML = '';
+    for (let i = 2050; i >= 2020; i--) {
+        const option = document.createElement('option');
+        option.value = i;
+        option.textContent = i;
+        if (i === currentYear) option.selected = true;
+        yearSelector.appendChild(option);
+    }
+
+    const updateDashboard = () => {
+        renderPaymentCards(parseInt(yearSelector.value), parseInt(monthSelector.value));
+    };
+    monthSelector.onchange = updateDashboard;
+    yearSelector.onchange = updateDashboard;
+}
+
+function renderPaymentCards(selectedYear, selectedMonth) {
+    const cardContainer = document.getElementById('paymentCardContainer');
+    cardContainer.innerHTML = '<p class="text-gray-500">Calculating monthly payment...</p>';
+    const monthlyStats = {};
+
+    workOrders.forEach(wo => {
+        if (!wo.history || wo.history.length === 0) return;
+        wo.history.forEach(entry => {
+            const entryDate = new Date(entry.timestamp);
+            if (entryDate.getFullYear() === selectedYear && entryDate.getMonth() === selectedMonth) {
+                const user = users[wo.userId];
+                const product = products[wo.productId];
+                if (!user || !product) return;
+
+                if (!monthlyStats[wo.userId]) {
+                    monthlyStats[wo.userId] = { userId: wo.userId, name: user.name, totalEarnings: 0, products: {} };
+                }
+                
+                if (!monthlyStats[wo.userId].products[wo.productId]) {
+                    monthlyStats[wo.userId].products[wo.productId] = { qty: 0 };
+                }
+
+                monthlyStats[wo.userId].products[wo.productId].qty += entry.completed;
+            }
+        });
+    });
+
+    Object.keys(monthlyStats).forEach(userId => {
+        let totalEarnings = 0;
+        const userProducts = monthlyStats[userId].products;
+        Object.keys(userProducts).forEach(productId => {
+            const product = products[productId];
+            if (product) {
+                totalEarnings += userProducts[productId].qty * product.price;
+            }
+        });
+        monthlyStats[userId].totalEarnings = totalEarnings;
+    });
+
+    cardContainer.innerHTML = '';
+    if (Object.keys(monthlyStats).length === 0) {
+        cardContainer.innerHTML = `<p class="text-gray-500 col-span-full text-center">No work was completed in ${monthNames[selectedMonth]} ${selectedYear}.</p>`;
+        return;
+    }
+
+    Object.values(monthlyStats).forEach(stats => {
+        const card = document.createElement('div');
+        card.className = 'bg-white p-4 rounded-lg shadow-lg flex flex-col';
+
+        let itemsHtml = Object.keys(stats.products).map(productId => {
+            const product = products[productId];
+            const item = stats.products[productId];
+            if (!product) return '';
+            
+            const subTotal = item.qty * product.price;
+            return `<div class="flex justify-between text-sm text-gray-600"><span class="truncate pr-2">${product.name} x ${item.qty}</span><span>₹${subTotal.toFixed(2)}</span></div>`;
+        }).join('');
+
+        const payButtonHtml = `<button class="btn btn-pay w-full mt-4" onclick="initiatePayment('${stats.userId}', ${stats.totalEarnings}, '${monthNames[selectedMonth]}', ${selectedYear})">PAY NOW</button>`;
+        
+        card.innerHTML = `
+            <div class="flex items-center gap-3 border-b pb-3">
+                <div class="bg-slate-100 text-slate-600 rounded-full h-10 w-10 flex items-center justify-center shrink-0">
+                    <span class="material-icons">person</span>
+                </div>
+                <div>
+                    <h3 class="text-lg font-bold text-gray-800">${stats.name}</h3>
+                    <p class="text-xs text-gray-500">For ${monthNames[selectedMonth]} ${selectedYear}</p>
+                </div>
+            </div>
+            <div class="py-3 space-y-2 flex-grow font-mono text-xs">${itemsHtml}</div>
+            <div class="border-t pt-3 mt-auto">
+                 <div class="flex justify-between items-center text-lg">
+                    <span class="text-gray-600 font-sans">Total</span>
+                    <span class="font-bold text-green-600 font-sans">₹${stats.totalEarnings.toFixed(2)}</span>
+                </div>
+                ${payButtonHtml}
+            </div>`;
+        cardContainer.appendChild(card);
+    });
+}
+
+function setupReportSelectors() {
+    const monthSelector = document.getElementById('reportMonthSelector');
+    const yearSelector = document.getElementById('reportYearSelector');
+    const currentDate = new Date();
+    const currentYear = currentDate.getFullYear();
+    const currentMonth = currentDate.getMonth();
+
+    if(monthSelector.options.length > 0) return;
+
+    monthSelector.innerHTML = '';
+    monthNames.forEach((name, index) => {
+        const option = document.createElement('option');
+        option.value = index;
+        option.textContent = name;
+        if (index === currentMonth) option.selected = true;
+        monthSelector.appendChild(option);
+    });
+
+    yearSelector.innerHTML = '';
+    for (let i = 2050; i >= 2020; i--) {
+        const option = document.createElement('option');
+        option.value = i;
+        option.textContent = i;
+        if (i === currentYear) option.selected = true;
+        yearSelector.appendChild(option);
+    }
+    
+    const updateReport = () => {
+        renderMonthlyReport(parseInt(yearSelector.value), parseInt(monthSelector.value));
+    };
+    monthSelector.onchange = updateReport;
+    yearSelector.onchange = updateReport;
+
+    updateReport();
+}
+
+function renderMonthlyReport(selectedYear, selectedMonth) {
+    const cardContainer = document.getElementById('reportCardContainer');
+    cardContainer.innerHTML = '<p class="text-gray-500">Generating report...</p>';
+
+    const start = new Date(selectedYear, selectedMonth, 1);
+    const end = new Date(selectedYear, selectedMonth + 1, 0);
+    end.setHours(23, 59, 59, 999);
+
+    let grandTotalEstimatedCharges = 0;
+
+    const activeWorkOrderIds = new Set();
+    workOrders.forEach(wo => {
+        const creationDate = new Date(wo.createdAt);
+        if ((creationDate.getFullYear() === selectedYear && creationDate.getMonth() === selectedMonth) || !((wo.completedQty || 0) >= wo.totalQty)) {
+            if(wo.history && wo.history.length > 0){
+                 for (const entry of wo.history) {
+                    const entryDate = new Date(entry.timestamp);
+                    if (entryDate.getFullYear() === selectedYear && entryDate.getMonth() === selectedMonth) {
+                        activeWorkOrderIds.add(wo.id);
+                        break;
+                    }
+                }
+            } else if(creationDate.getFullYear() === selectedYear && creationDate.getMonth() === selectedMonth){
+                 activeWorkOrderIds.add(wo.id);
+            }
+        }
+    });
+    
+    if (activeWorkOrderIds.size === 0) {
+        cardContainer.innerHTML = `<p class="text-gray-500 col-span-full text-center">No work activity found in ${monthNames[selectedMonth]} ${selectedYear}.</p>`;
+        document.getElementById('reportGrandTotalDisplay').innerHTML = '';
+        return;
+    }
+
+    const reportData = {};
+    workOrders.forEach(wo => {
+        if (activeWorkOrderIds.has(wo.id)) {
+            const user = users[wo.userId];
+            const product = products[wo.productId];
+            if (!user || !product) return;
+
+            if (!reportData[wo.userId]) {
+                reportData[wo.userId] = { name: user.name, orders: [] };
+            }
+            
+            let completedAsOfMonthEnd = 0;
+            if (wo.history) {
+                for (const entry of wo.history) {
+                    const entryDate = new Date(entry.timestamp);
+                    if (entryDate <= end) {
+                        completedAsOfMonthEnd += entry.completed;
+                    }
+                }
+            }
+
+            reportData[wo.userId].orders.push({
+                ...wo,
+                completedAsOfMonthEnd: completedAsOfMonthEnd,
+                productName: product.name,
+                productIcon: product.icon || 'category'
+            });
+        }
+    });
+
+    cardContainer.innerHTML = '';
+    Object.values(reportData).forEach(details => {
+        const card = document.createElement('div');
+        card.className = 'bg-white p-4 rounded-lg shadow-lg flex flex-col gap-3';
+        
+        let estimatedCharges = 0;
+        details.orders.forEach(order => {
+            const price = products[order.productId]?.price || 0;
+            const orderCreationDate = new Date(order.createdAt);
+
+            if (orderCreationDate.getFullYear() < selectedYear || 
+               (orderCreationDate.getFullYear() === selectedYear && orderCreationDate.getMonth() < selectedMonth)) 
+            {
+                let completedBeforeThisMonth = 0;
+                if (order.history) {
+                    for (const entry of order.history) {
+                        const entryDate = new Date(entry.timestamp);
+                        if (entryDate.getFullYear() < selectedYear ||
+                           (entryDate.getFullYear() === selectedYear && entryDate.getMonth() < selectedMonth))
+                        {
+                            completedBeforeThisMonth += entry.completed;
+                        }
+                    }
+                }
+                const pendingQty = order.totalQty - completedBeforeThisMonth;
+                if (pendingQty > 0) {
+                    estimatedCharges += pendingQty * price;
+                }
+            } 
+            else if (orderCreationDate.getFullYear() === selectedYear && orderCreationDate.getMonth() === selectedMonth) {
+                estimatedCharges += order.totalQty * price;
+            }
+        });
+
+        grandTotalEstimatedCharges += estimatedCharges;
+
+        const estimatedChargesHtml = `
+            <div class="my-3 text-center border-y py-2 bg-slate-50 rounded-md">
+                <p class="text-xs font-medium text-gray-500">Estimated Sub Work charges</p>
+                <p class="text-xl font-bold text-blue-600">₹${estimatedCharges.toFixed(2)}</p>
+            </div>
+        `;
+
+        details.orders.sort((a, b) => {
+            const aIsCompleted = (a.completedAsOfMonthEnd >= a.totalQty);
+            const bIsCompleted = (b.completedAsOfMonthEnd >= b.totalQty);
+            if (aIsCompleted === bIsCompleted) return 0;
+            return aIsCompleted ? 1 : -1;
+        });
+
+        const firstCompletedIndex = details.orders.findIndex(order => order.completedAsOfMonthEnd >= order.totalQty);
+
+        let ordersHtml = details.orders.map((order, index) => {
+            const isCompleted = order.completedAsOfMonthEnd >= order.totalQty;
+            const percentage = order.totalQty > 0 ? (order.completedAsOfMonthEnd / order.totalQty) * 100 : 0;
+            const progressBarColor = isCompleted ? 'bg-green-500' : 'bg-gradient-to-r from-[#189e8a] to-[#839e18]';
+            
+            let daysText = '';
+            const createdDate = new Date(order.createdAt);
+            if (isCompleted) {
+                let completionTimestamp = order.updatedAt;
+                let runningTotal = 0;
+                if(order.history) {
+                    for(const entry of order.history) {
+                        runningTotal += entry.completed;
+                        if(runningTotal >= order.totalQty) {
+                            completionTimestamp = entry.timestamp;
+                            break;
+                        }
+                    }
+                }
+                const completedDate = new Date(completionTimestamp);
+                const diffTime = Math.abs(completedDate - createdDate);
+                const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24)) || 1;
+                daysText = `<span class="text-xs text-green-600 font-semibold">Completed in ${diffDays} days</span>`;
+            } else if (order.completedAsOfMonthEnd === 0) {
+                daysText = `<span class="text-xs text-red-600 font-semibold">Not started</span>`;
+            } else {
+                const diffTime = Math.abs(end - createdDate);
+                const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24)) || 1;
+                daysText = `<span class="text-xs text-blue-600">Ongoing: ${diffDays} days</span>`;
+            }
+
+            let separatorHtml = '';
+            if (index === firstCompletedIndex && firstCompletedIndex > 0) {
+                separatorHtml = '<hr class="my-4 border-dashed">';
+            }
+
+            return `${separatorHtml}
+            <div class="mb-2">
+                <div class="flex justify-between items-center text-sm mb-1">
+                    <div class="flex items-center gap-2">
+                        <span class="material-icons text-base text-slate-500">${order.productIcon}</span>
+                        <span class="font-medium text-gray-700 truncate pr-2">${order.productName}</span>
+                    </div>
+                    <span class="text-gray-500">${order.completedAsOfMonthEnd} / ${order.totalQty}</span>
+                </div>
+                <div class="w-full bg-gray-200 rounded-full h-2.5">
+                    <div class="${progressBarColor} h-2.5 rounded-full" style="width: ${percentage}%"></div>
+                </div>
+                <div class="text-right mt-1">${daysText}</div>
+            </div>`;
+        }).join('');
+
+        card.innerHTML = `
+            <div class="flex items-center gap-3">
+                <div class="bg-slate-100 text-slate-600 rounded-full h-10 w-10 flex items-center justify-center shrink-0">
+                    <span class="material-icons">person</span>
+                </div>
+                <h3 class="text-xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-[#189e8a] to-[#839e18]">${details.name}</h3>
+            </div>
+            ${estimatedChargesHtml}
+            <div>${ordersHtml}</div>`;
+        cardContainer.appendChild(card);
+    });
+
+    const grandTotalDisplayEl = document.getElementById('reportGrandTotalDisplay');
+    grandTotalDisplayEl.innerHTML = `
+        <p class="text-xs font-medium text-gray-500">Total Est. Sub Work Charge</p>
+        <p class="text-2xl font-bold text-green-600">₹${grandTotalEstimatedCharges.toFixed(2)}</p>
+    `;
+}
+
+async function createUser(){
+    const name = document.getElementById('newUserName').value.trim();
+    const pin = document.getElementById('newUserPin').value.trim();
+    const upiId = document.getElementById('newUserUpiId').value.trim();
+    if(!name || !pin || !upiId) return alert('Enter name, PIN, and UPI ID');
+    const newUserRef = push(ref(db, 'users'));
+    await set(newUserRef, { name, pin, upiId });
+    showToast('User created successfully');
+    document.getElementById('newUserName').value = '';
+    document.getElementById('newUserPin').value = '';
+    document.getElementById('newUserUpiId').value = '';
+    await loadUsers();
+    renderUsersTable();
+}
+
+function renderUsersTable(){
+    const tbody = document.getElementById('usersTableBody');
+    tbody.innerHTML = '';
+    Object.entries(users).forEach(([id, user]) => {
+        const row = tbody.insertRow();
+        row.innerHTML = `<td>${user.name}</td><td>${user.pin}</td><td>${user.upiId || ''}</td>`;
+    });
+}
+
+async function createProduct(){
+    const name = document.getElementById('newProductName').value.trim();
+    const price = parseFloat(document.getElementById('newProductPrice').value);
+    const icon = document.getElementById('newProductIcon').value.trim() || 'category';
+    if(!name || !price || price <= 0) return alert('Enter valid product name and price');
+    const newProductRef = push(ref(db, 'products'));
+    await set(newProductRef, { name, price, icon });
+    showToast('Product created successfully');
+    document.getElementById('newProductName').value = '';
+    document.getElementById('newProductPrice').value = '';
+    document.getElementById('newProductIcon').value = '';
+    await loadProducts();
+    renderProductsTable();
+}
+
+function renderProductsTable(){
+    const tbody = document.getElementById('productsTableBody');
+    tbody.innerHTML = '';
+    Object.entries(products).forEach(([id, product]) => {
+        const row = tbody.insertRow();
+        const icon = product.icon || 'category';
+        row.innerHTML = `
+            <td><span class="material-icons" style="color: #189e8a; font-size: 1.5rem;">${icon}</span></td>
+            <td>${product.name}</td>
+            <td>₹${product.price}</td>
+        `;
+    });
+}
+
+function populateUserProductDropdowns(){
+    const userSelect = document.getElementById('newOrderUser');
+    const productSelect = document.getElementById('newOrderProduct');
+
+    userSelect.innerHTML = '<option value="">Choose a user...</option>';
+    Object.entries(users).forEach(([id, user]) => {
+        userSelect.innerHTML += `<option value="${id}">${user.name}</option>`;
+    });
+
+    productSelect.innerHTML = '<option value="">Choose a product...</option>';
+    Object.entries(products).forEach(([id, product]) => {
+        productSelect.innerHTML += `<option value="${id}">${product.name} - ₹${product.price}</option>`;
+    });
+}
+
+async function createWorkOrder(){
+    const userId = document.getElementById('newOrderUser').value;
+    const productId = document.getElementById('newOrderProduct').value;
+    const totalQty = parseInt(document.getElementById('newOrderQty').value);
+
+    if(!userId || !productId || !totalQty || totalQty <= 0) return alert('Fill all fields with valid data');
+
+    const newOrderRef = push(ref(db, 'workOrders'));
+    await set(newOrderRef, {
+        userId, productId, totalQty, completedQty: 0,
+        createdAt: new Date().toISOString(), updatedAt: new Date().toISOString(), history: []
+    });
+
+    showToast('Work Order created successfully');
+    document.getElementById('newOrderUser').value = '';
+    document.getElementById('newOrderProduct').value = '';
+    document.getElementById('newOrderQty').value = '';
+    await loadWorkOrders();
+    renderWorkOrdersTable();
+}
+
+function renderWorkOrdersTable(){
+    const tbody = document.getElementById('workOrdersTableBody');
+    tbody.innerHTML = '';
+    workOrders.forEach(wo => {
+        const row = tbody.insertRow();
+        const pending = wo.totalQty - (wo.completedQty || 0);
+        row.innerHTML = `
+            <td>${users[wo.userId]?.name || 'Unknown'}</td>
+            <td>${products[wo.productId]?.name || 'Unknown'}</td>
+            <td>${wo.totalQty}</td>
+            <td>${wo.completedQty || 0}</td>
+            <td>${pending}</td>
+            <td>${new Date(wo.createdAt).toLocaleDateString()}</td>
+        `;
+    });
+}
+
+function renderUserWorkOrders(){
+    const workOrdersGrid = document.getElementById('workOrdersGrid');
+    workOrdersGrid.innerHTML='';
+    let userOrders = workOrders.filter(wo => wo.userId === currentUser.id);
+
+    const now = new Date();
+    const currentMonth = now.getMonth();
+    const currentYear = now.getFullYear();
+
+    userOrders = userOrders.filter(wo => {
+        const isCompleted = (wo.completedQty || 0) >= wo.totalQty;
+        if (!isCompleted) {
+            return true;
+        }
+        const completionDate = new Date(wo.updatedAt);
+        const wasCompletedThisMonth = completionDate.getFullYear() === currentYear && completionDate.getMonth() === currentMonth;
+
+        return wasCompletedThisMonth;
+    });
+
+    if (workOrderFilter === 'live') {
+        userOrders = userOrders.filter(wo => (wo.completedQty || 0) < wo.totalQty);
+    }
+
+    if (userOrders.length === 0) {
+        workOrdersGrid.innerHTML = `<p class="text-slate-500 text-center col-span-full mt-8">No ${workOrderFilter === 'live' ? 'live' : ''} work orders to show.</p>`;
+        return;
+    }
+
+    const sorted = userOrders.sort((a,b)=>{
+        const aPending = a.totalQty - (a.completedQty || 0);
+        const bPending = b.totalQty - (b.completedQty || 0);
+        if (aPending === 0 && bPending > 0) return 1;
+        if (bPending === 0 && aPending > 0) return -1;
+        return new Date(b.createdAt) - new Date(a.createdAt);
+    });
+
+    sorted.forEach(wo=>{
+        const tile = document.createElement('div');
+        const completedQty = wo.completedQty || 0;
+        const totalQty = wo.totalQty;
+        const product = products[wo.productId];
+        const icon = product?.icon || 'category';
+        
+        const isCompleted = completedQty >= totalQty;
+        const percentage = totalQty > 0 ? (completedQty / totalQty) * 100 : 0;
+        
+        const titleColor = isCompleted ? 'text-white' : 'text-gray-800';
+        const dateColor = isCompleted ? 'text-teal-100' : 'text-gray-500';
+        const progressQtyColor = isCompleted ? 'text-teal-100' : 'text-gray-500';
+        
+        const statusLabel = isCompleted ? 'Completed' : 'Progress';
+        const progressBarColor = 'bg-gradient-to-r from-[#189e8a] to-[#839e18]';
+
+        let daysText = '';
+        const createdDate = new Date(wo.createdAt);
+        if (isCompleted) {
+            daysText = `<span class="text-xs text-white font-semibold flex items-center justify-end">Done <span class="material-icons text-sm ml-1">check_circle</span></span>`;
+        } else if (completedQty === 0) {
+            daysText = `<span class="text-xs text-red-600 font-semibold">Not started</span>`;
+        } else {
+            const today = new Date();
+            const diffTime = Math.abs(today - createdDate);
+            const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24)) || 1;
+            daysText = `<span class="text-xs text-blue-600">Ongoing: ${diffDays} days</span>`;
+        }
+        
+        tile.className='tile shadow-md';
+        if (isCompleted) {
+            tile.style.background = 'linear-gradient(to top left, #c9da6a, #15a78b)';
+        } else {
+            tile.style.background = 'linear-gradient(to top left, #f9fafb, #e5e7eb)';
+        }
+
+        tile.innerHTML = `
+            <span class="material-icons tile-icon" style="color: ${isCompleted ? '#c9da6a' : '#cbd5e1'}; opacity: ${isCompleted ? '0.1' : '0.15'};">${icon}</span>
+            <div class="product-icon">
+                <span class="material-icons" style="color: ${isCompleted ? '#c9da6a' : '#189e8a'};">${icon}</span>
+                <p class="font-bold text-lg ${titleColor}">${product?.name || 'Product'}</p>
+            </div>
+            <p class="text-xs ${dateColor} mb-2">Created: ${new Date(wo.createdAt).toLocaleDateString()}</p>
+            <div class="w-full mt-auto">
+                <div class="flex justify-between items-center text-xs mb-1">
+                    <span class="font-medium ${isCompleted ? 'text-teal-100' : 'text-gray-700'}">${statusLabel}</span>
+                    <span class="${progressQtyColor}">${completedQty} / ${totalQty}</span>
+                </div>
+                <div class="w-full bg-black bg-opacity-10 rounded-full h-2 shadow-inner">
+                    <div class="${progressBarColor} h-2 rounded-full shadow-md" style="width: ${percentage}%"></div>
+                </div>
+                <div class="text-right mt-1">${daysText}</div>
+            </div>
+        `;
+        tile.addEventListener('click', ()=>openWorkModal(wo));
+        workOrdersGrid.appendChild(tile);
+    });
+}
+
+function updateEarnings(){
+    const userOrders = workOrders.filter(wo => wo.userId === currentUser.id);
+    const now = new Date();
+    const currentMonth = now.getMonth();
+    const currentYear = now.getFullYear();
+    let currentEarnings = 0;
+    let estimatedEarnings = 0;
+
+    userOrders.forEach(wo => {
+        const price = products[wo.productId]?.price || 0;
+        const orderCreationDate = new Date(wo.createdAt);
+
+        if (orderCreationDate.getFullYear() < currentYear || 
+           (orderCreationDate.getFullYear() === currentYear && orderCreationDate.getMonth() < currentMonth)) 
+        {
+            let completedBeforeThisMonth = 0;
+            if (wo.history) {
+                for (const entry of wo.history) {
+                    const entryDate = new Date(entry.timestamp);
+                    if (entryDate.getFullYear() < currentYear ||
+                       (entryDate.getFullYear() === currentYear && entryDate.getMonth() < currentMonth))
+                    {
+                        completedBeforeThisMonth += entry.completed;
+                    }
+                }
+            }
+            const pendingQty = wo.totalQty - completedBeforeThisMonth;
+            if (pendingQty > 0) {
+                 estimatedEarnings += pendingQty * price;
+            }
+        } 
+        else if (orderCreationDate.getFullYear() === currentYear && orderCreationDate.getMonth() === currentMonth) {
+            estimatedEarnings += wo.totalQty * price;
+        }
+
+        if (wo.history && wo.history.length > 0) {
+            wo.history.forEach(entry => {
+                const entryDate = new Date(entry.timestamp);
+                if (entryDate.getFullYear() === currentYear && entryDate.getMonth() === currentMonth) {
+                    currentEarnings += (entry.completed || 0) * price;
+                }
+            });
+        }
+    });
+    
+    currentEarningsEl.textContent = `₹${currentEarnings.toFixed(2)}`;
+    estimatedEarningsEl.textContent = `Estimated Earning : ₹${estimatedEarnings.toFixed(2)}`;
+}
+
+let selectedWorkOrder = null;
+const workModal = document.getElementById('workModal');
+const modalTitle = document.getElementById('modalTitle');
+const qtyDetails = document.getElementById('qtyDetails');
+const historyList = document.getElementById('historyList');
+const completedSummaryEl = document.getElementById('completedSummary');
+const updateSection = document.getElementById('updateSection');
+const todayCompleted = document.getElementById('todayCompleted');
+const updateWorkBtn = document.getElementById('updateWorkBtn');
+const closeModal = document.getElementById('closeModal');
+
+function openWorkModal(wo){
+    selectedWorkOrder = wo;
+    const isCompleted = (wo.completedQty || 0) >= wo.totalQty;
+    const product = products[wo.productId];
+    const icon = product?.icon || 'category';
+    
+    modalTitle.innerHTML = `<div class="product-icon"><span class="material-icons" style="font-size: 2rem;">${icon}</span><span>${product?.name || 'Work Order'}</span></div>`;
+    qtyDetails.innerHTML = `Total Qty: ${wo.totalQty} | Completed: ${wo.completedQty||0} | Pending: ${wo.totalQty-(wo.completedQty||0)}`;
+    
+    if(isCompleted){
+        const createdDate = new Date(wo.createdAt);
+        const updatedDate = new Date(wo.updatedAt);
+        const days = Math.ceil((updatedDate - createdDate) / (1000 * 60 * 60 * 24)) || 1;
+        const earnings = wo.totalQty * (product?.price || 0);
+        
+        completedSummaryEl.innerHTML = `🎉 Congratulations! You completed this order in <span class="days">${days} Days</span> and earned <span class="rupees">₹${earnings.toFixed(2)}</span>`;
+        completedSummaryEl.classList.remove('hidden');
+        updateSection.classList.add('hidden');
+        todayCompleted.disabled = true;
+        updateWorkBtn.disabled = true;
+    } else {
+        completedSummaryEl.classList.add('hidden');
+        updateSection.classList.remove('hidden');
+        todayCompleted.disabled = false;
+        updateWorkBtn.disabled = false;
+    }
+    
+    todayCompleted.value='';
+    renderHistory(wo);
+    workModal.classList.add('show');
+}
+
+function closeWorkModal(){
+    workModal.classList.remove('show');
+    selectedWorkOrder = null;
+    todayCompleted.value = '';
+}
+
+closeModal.addEventListener('click', closeWorkModal);
+workModal.addEventListener('click', (e)=>{ if(e.target === workModal) closeWorkModal(); });
+
+function renderHistory(wo){
+    historyList.innerHTML='';
+    if(!wo.history || wo.history.length === 0){
+        historyList.innerHTML = '<p class="text-gray-500 text-sm">No history yet</p>';
+        return;
+    }
+    wo.history.slice().reverse().forEach(entry=>{
+        const div = document.createElement('div');
+        div.textContent = `${new Date(entry.timestamp).toLocaleString()}: +${entry.completed} units`;
+        historyList.appendChild(div);
+    });
+}
+
+updateWorkBtn.addEventListener('click', async ()=>{
+    if(!selectedWorkOrder) return;
+    const increment = parseInt(todayCompleted.value);
+    if(isNaN(increment) || increment<=0) return alert("Enter valid quantity");
+    
+    const pending = selectedWorkOrder.totalQty - (selectedWorkOrder.completedQty || 0);
+    if(increment > pending) return alert(`Cannot exceed pending quantity (${pending})`);
+    
+    const orderRef = ref(db,'workOrders/'+selectedWorkOrder.id);
+    const newCompleted = (selectedWorkOrder.completedQty||0)+increment;
+    const historyEntry = { timestamp: new Date().toISOString(), completed: increment };
+
+    const updateObj = {
+        completedQty: newCompleted,
+        updatedAt: new Date().toISOString(),
+        history: selectedWorkOrder.history?[...selectedWorkOrder.history, historyEntry]:[historyEntry]
+    };
+    
+    await update(orderRef, updateObj);
+    closeWorkModal();
+    showToast(`Great job ${currentUser.name}! Daily quantity updated`);
+    await loadWorkOrders();
+    updateEarnings();
+});
+
+function showToast(message){
+    const toastContainer = document.getElementById('toastContainer');
+    const toast = document.createElement('div');
+    toast.className='toast toast-gradient';
+    toast.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg><span>${message}</span>`;
+    toastContainer.appendChild(toast);
+    setTimeout(()=>{
+        toast.style.opacity = '0';
+        setTimeout(()=>toast.remove(),500);
+    },3000);
+}
+
+function initiatePayment(userId, amount, month, year) {
+    const user = users[userId];
+    if (!user || !user.upiId) {
+        alert(`UPI ID for ${user.name} is not configured! Please add it in the Manage > Users section.`);
+        return;
+    }
+
+    const payeeName = user.name;
+    const upiId = user.upiId;
+    const transactionNote = `Payment for ${month} ${year}`;
+    const upiLink = `upi://pay?pa=${upiId}&pn=${encodeURIComponent(payeeName)}&am=${amount.toFixed(2)}&cu=INR&tn=${encodeURIComponent(transactionNote)}`;
+    
+    window.location.href = upiLink;
+}
+
+async function clearData() {
+    const confirmation = confirm("DANGER! Are you sure you want to delete ALL work orders and their history? This action is irreversible and cannot be undone.");
+    
+    if (confirmation) {
+        try {
+            await set(ref(db, 'workOrders'), null);
+            showToast('All work order data has been successfully cleared.');
+            await loadAllData();
+            
+            const currentVisibleSection = document.querySelector('.admin-section:not(.hidden)');
+            if (currentVisibleSection) {
+                 const sectionId = currentVisibleSection.id.replace('admin', '').replace('Section', '').toLowerCase();
+                 showAdminSection(sectionId);
+            } else {
+                 showAdminSection('report');
+            }
+        } catch (error) {
+            console.error("Error clearing data:", error);
+            alert("An error occurred while clearing the data. See the console for details.");
+        }
+    }
+}
+
+function setupFilterToggle() {
+    const toggleAllBtn = document.getElementById('toggleAllBtn');
+    const toggleLiveBtn = document.getElementById('toggleLiveBtn');
+
+    toggleAllBtn.addEventListener('click', () => {
+        if (workOrderFilter === 'all') return;
+        workOrderFilter = 'all';
+        toggleAllBtn.classList.add('shadow', 'bg-white', 'text-slate-800');
+        toggleAllBtn.classList.remove('text-slate-500');
+        toggleLiveBtn.classList.remove('shadow', 'bg-white', 'text-slate-800');
+        toggleLiveBtn.classList.add('text-slate-500');
+        renderUserWorkOrders();
+    });
+
+    toggleLiveBtn.addEventListener('click', () => {
+        if (workOrderFilter === 'live') return;
+        workOrderFilter = 'live';
+        toggleLiveBtn.classList.add('shadow', 'bg-white', 'text-slate-800');
+        toggleLiveBtn.classList.remove('text-slate-500');
+        toggleAllBtn.classList.remove('shadow', 'bg-white', 'text-slate-800');
+        toggleAllBtn.classList.add('text-slate-500');
+        renderUserWorkOrders();
+    });
+}
+
+function setupHistoryModal() {
+    const historyModal = document.getElementById('historyModal');
+    const viewHistoryBtn = document.getElementById('viewHistoryBtn');
+    const closeHistoryModalBtn = document.getElementById('closeHistoryModalBtn');
+    const monthSelector = document.getElementById('historyMonthSelector');
+    const detailsContainer = document.getElementById('historyDetailsContainer');
+
+    viewHistoryBtn.addEventListener('click', () => {
+        populateHistorySelectors();
+        const now = new Date();
+        now.setDate(0);
+        const prevMonthValue = `${now.getFullYear()}-${String(now.getMonth()).padStart(2, '0')}`;
+        const prevMonthOption = monthSelector.querySelector(`option[value="${prevMonthValue}"]`);
+
+        if (prevMonthOption) {
+            monthSelector.value = prevMonthValue;
+        }
+
+        renderHistoryDetails();
+        historyModal.classList.add('show');
+    });
+
+    const closeModal = () => historyModal.classList.remove('show');
+    closeHistoryModalBtn.addEventListener('click', closeModal);
+    historyModal.addEventListener('click', (e) => { if (e.target === historyModal) closeModal(); });
+
+    function populateHistorySelectors() {
+        const userWork = workOrders.filter(wo => wo.userId === currentUser.id && wo.history);
+        const availableMonths = new Set();
+        
+        userWork.forEach(wo => {
+            wo.history.forEach(entry => {
+                const d = new Date(entry.timestamp);
+                availableMonths.add(`${d.getFullYear()}-${String(d.getMonth()).padStart(2, '0')}`);
+            });
+        });
+
+        const sortedMonths = Array.from(availableMonths).sort().reverse();
+        monthSelector.innerHTML = '<option value="">Select a Month...</option>';
+        
+        sortedMonths.forEach(m => {
+            const [year, month] = m.split('-');
+            const text = `${monthNames[parseInt(month)]} ${year}`;
+            monthSelector.innerHTML += `<option value="${m}">${text}</option>`;
+        });
+    }
+    
+    function renderHistoryDetails() {
+        const selectedMonthYear = monthSelector.value;
+        if (!selectedMonthYear) {
+            detailsContainer.innerHTML = '<p class="text-center text-gray-500 mt-8">Please select a month to view details.</p>';
+            return;
+        }
+        
+        const [year, month] = selectedMonthYear.split('-').map(Number);
+        let monthlyTotal = 0;
+        const productSummary = {};
+
+        const userWork = workOrders.filter(wo => wo.userId === currentUser.id && wo.history);
+        
+        userWork.forEach(wo => {
+            const product = products[wo.productId];
+            if (!product) return;
+
+            wo.history.forEach(entry => {
+                const entryDate = new Date(entry.timestamp);
+                if (entryDate.getFullYear() === year && entryDate.getMonth() === month) {
+                    const entryEarnings = (entry.completed || 0) * product.price;
+                    monthlyTotal += entryEarnings;
+
+                    if (!productSummary[wo.productId]) {
+                        productSummary[wo.productId] = { name: product.name, icon: product.icon, qty: 0, earnings: 0 };
+                    }
+                    productSummary[wo.productId].qty += entry.completed;
+                    productSummary[wo.productId].earnings += entryEarnings;
+                }
+            });
+        });
+
+        if (monthlyTotal === 0) {
+            detailsContainer.innerHTML = `<p class="text-center text-gray-500 mt-8">No work was recorded for this month.</p>`;
+            return;
+        }
+
+        let detailsHtml = `
+            <div class="text-center border-b pb-3 mb-3">
+                <p class="text-sm text-gray-500">Total Earnings</p>
+                <p class="text-3xl font-bold text-green-600">₹${monthlyTotal.toFixed(2)}</p>
+            </div>
+            <div class="space-y-2">
+        `;
+        
+        for (const productId in productSummary) {
+            const item = productSummary[productId];
+            detailsHtml += `
+                <div class="flex justify-between items-center bg-white p-2 rounded-lg shadow-sm">
+                    <div class="flex items-center gap-3">
+                        <span class="material-icons text-teal-500">${item.icon || 'category'}</span>
+                        <div>
+                            <p class="font-bold">${item.name}</p>
+                            <p class="text-xs text-gray-500">Qty: ${item.qty}</p>
+                        </div>
+                    </div>
+                    <p class="font-semibold">₹${item.earnings.toFixed(2)}</p>
+                </div>
+            `;
+        }
+        
+        detailsHtml += `</div>`;
+        detailsContainer.innerHTML = detailsHtml;
+    }
+
+    monthSelector.addEventListener('change', renderHistoryDetails);
+}
+
+function updateDateTime() {
+    const now = new Date();
+    const dateOptions = { weekday: 'short', day: 'numeric', month: 'short' };
+    const dateString = now.toLocaleDateString('en-GB', dateOptions);
+    const timeOptions = { hour: '2-digit', minute: '2-digit', hour12: true };
+    const timeString = now.toLocaleTimeString('en-IN', timeOptions);
+
+    const dateDisplayUser = document.getElementById('date-display-user');
+    const timeDisplayUser = document.getElementById('time-display-user');
+    const dateDisplayAdmin = document.getElementById('date-display-admin');
+    const timeDisplayAdmin = document.getElementById('time-display-admin');
+
+    if (dateDisplayUser) dateDisplayUser.textContent = dateString;
+    if (timeDisplayUser) timeDisplayUser.textContent = timeString;
+    if (dateDisplayAdmin) dateDisplayAdmin.textContent = dateString;
+    if (timeDisplayAdmin) timeDisplayAdmin.textContent = timeString;
+}
+
+updateDateTime();
+setInterval(updateDateTime, 1000);
+
+// --- Mobile Keyboard Fix ---
+const loginInputs = [document.getElementById('loginUser'), document.getElementById('loginPass')];
+loginInputs.forEach(input => {
+    input.addEventListener('focus', (e) => {
+        setTimeout(() => {
+            e.target.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }, 300); // A small delay can help ensure the keyboard is fully visible
+    });
+});
+
+</script>
+</body>
+</html>
