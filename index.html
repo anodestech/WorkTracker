@@ -1442,16 +1442,19 @@ function updateDateTime() {
 updateDateTime();
 setInterval(updateDateTime, 1000);
 
-// --- Mobile Keyboard Fix ---
-const loginInputs = [document.getElementById('loginUser'), document.getElementById('loginPass')];
-loginInputs.forEach(input => {
+// --- Mobile Keyboard Fix for ALL input fields ---
+const allInputs = document.querySelectorAll('input[type="text"], input[type="password"], input[type="number"]');
+
+allInputs.forEach(input => {
     input.addEventListener('focus', (e) => {
+        // A small delay helps ensure the keyboard is fully animated before scrolling
         setTimeout(() => {
             e.target.scrollIntoView({ behavior: 'smooth', block: 'center' });
-        }, 300); // A small delay can help ensure the keyboard is fully visible
+        }, 300);
     });
 });
 
 </script>
 </body>
 </html>
+
