@@ -101,9 +101,17 @@ body { font-family: 'Plus Jakarta Sans', sans-serif; background: #f1f5f9; margin
 .modal { background: rgba(0,0,0,0.5); display: none; align-items: center; justify-content: center; position: fixed; inset: 0; z-index: 100; }
 .modal.show { display: flex; }
 .modal-content { background: #fff; border-radius: 0.75rem; max-width: 600px; width: 90%; padding: 1.5rem; box-shadow: 0 6px 12px rgba(0,0,0,0.2); display:flex; flex-direction:column; gap:1rem; max-height:90vh; overflow-y:auto;}
+
+/* Replacement for the main input/select style */
 input, select {
-    width: 100%; padding: 0.75rem 1rem; border: 2px solid #e5e7eb; border-radius: 0.75rem;
-    font-size: 1rem; transition: all 0.3s ease; background: white; color: #1f2937;
+    width: 100%; 
+    padding: 0.875rem 1.25rem; /* Balanced vertical and horizontal padding */
+    border: 2px solid #e5e7eb; 
+    border-radius: 0.75rem;
+    font-size: 0.875rem; /* Slightly smaller font size */
+    transition: all 0.3s ease; 
+    background: white; 
+    color: #1f2937;
 }
 input:focus, select:focus {
     outline: none; border-color: #189e8a; box-shadow: 0 0 0 3px rgba(24, 158, 138, 0.1); background: #f9fafb;
@@ -119,7 +127,20 @@ input[type="number"]::-webkit-inner-spin-button, input[type="number"]::-webkit-o
 .toast { display: flex; align-items: center; gap: 0.5rem; padding: 0.75rem 1rem; border-radius: 0.75rem; color: white; font-weight: 500; box-shadow: 0 4px 12px rgba(0,0,0,0.2); animation: slide-in 0.3s ease-out; }
 @keyframes slide-in { from { opacity: 0; transform: translateY(-20px); } to { opacity: 1; transform: translateY(0); } }
 .toast-gradient { background: linear-gradient(90deg, #189e8a, #839e18); }
+
+
 .history-widget { max-height:150px; overflow-y:auto; border:1px solid #ddd; padding:0.5rem; border-radius:0.5rem; background:#f9fafb; font-size:0.875rem; }
+/* Replacement for .history-widget */
+.history-widget { 
+    max-height:150px; 
+    overflow-y:auto; 
+    border:1px solid #e2e8f0;
+    padding: 0.75rem;
+    border-radius:0.5rem; 
+    background:#f8fafc;
+    font-size:0.875rem; 
+}
+
 .qty-widget { background:#f0fdf4; padding:0.5rem; border-radius:0.5rem; font-weight:500; }
 .admin-section { background: white; border-radius: 1rem; padding: 1.5rem; margin: 1rem 0.5rem; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
 .table-container { overflow-x: auto; margin-top: 1rem; }
@@ -129,40 +150,104 @@ input[type="number"]::-webkit-inner-spin-button, input[type="number"]::-webkit-o
 .completed-summary { background: #dcfce7; border: 2px solid #22c55e; border-radius: 0.75rem; padding: 1rem; margin: 1rem 0; text-align: center; }
 .completed-summary .days { color: #16a34a; font-weight: 700; font-size: 1.5rem; }
 .completed-summary .rupees { color: #16a34a; font-weight: 700; font-size: 1.5rem; }
+
+#todayCompleted {
+    padding-top: 0.35rem;
+    padding-bottom: 0.35rem;
+    text-align: center;
+    font-weight: 600;
+}
+
+/* New styles for animated background shapes */
+.bg-shapes {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    z-index: 0; /* Ensures shapes are behind the login card */
+    pointer-events: none; /* Allows clicks to pass through */
+}
+
+.shape {
+    position: absolute;
+    border-radius: 50%;
+    opacity: 0.6;
+    animation: moveShapes 20s infinite alternate;
+    filter: blur(50px); /* Blurs the shapes to enhance glass effect */
+}
+
+.shape:nth-child(1) {
+    width: 200px; height: 200px;
+    background: linear-gradient(135deg, #ff7e5f, #feb47b);
+    top: 10%; left: 5%;
+    animation-delay: 0s;
+}
+.shape:nth-child(2) {
+    width: 250px; height: 250px;
+    background: linear-gradient(135deg, #84fab0, #8fd3f4);
+    top: 60%; right: 10%;
+    animation-delay: 5s;
+}
+.shape:nth-child(3) {
+    width: 150px; height: 150px;
+    background: linear-gradient(135deg, #a1c4fd, #c2e9fb);
+    bottom: 5%; left: 30%;
+    animation-delay: 10s;
+}
+.shape:nth-child(4) {
+    width: 300px; height: 300px;
+    background: linear-gradient(135deg, #fbc2eb, #a6c1ee);
+    top: 20%; right: 20%;
+    animation-delay: 15s;
+}
+/* Animation for shapes movement */
+@keyframes moveShapes {
+    0% { transform: translate(0, 0) scale(1); }
+    100% { transform: translate(20px, 30px) scale(1.05); }
+}
+
 </style>
 </head>
 <body>
 
 <div id="app" class="flex flex-col">
 
-    <div id="loginScreen" class="flex flex-col items-center justify-center min-h-screen w-full bg-gradient-to-br from-teal-50 via-slate-50 to-green-50">
-        <div class="login-card-animation w-full max-w-sm p-8 space-y-6 bg-white/70 backdrop-blur-xl border border-white/30 rounded-2xl shadow-2xl">
-            
-            <div class="flex justify-center">
-                <div class="w-16 h-16 rounded-full bg-gradient-to-br from-[#189e8a] to-[#839e18] flex items-center justify-center shadow-lg">
-                    <span class="material-icons text-white text-4xl">task_alt</span>
-                </div>
-            </div>
+<div id="loginScreen" class="flex flex-col items-center justify-center min-h-screen w-full bg-gradient-to-br from-cyan-200 via-blue-300 to-purple-400 p-4 relative">
     
-            <h1 class="text-3xl font-bold text-center text-transparent bg-clip-text bg-gradient-to-r from-[#189e8a] to-[#6a8013]">Anodes Work Tracker</h1>
-            
-            <form id="loginForm" class="space-y-4">
-                <div class="flex items-center gap-3 bg-slate-100 p-3 rounded-lg border-2 border-transparent focus-within:border-[#189e8a] focus-within:ring-2 focus-within:ring-[#189e8a]/20 transition-all duration-300">
-                    <span class="material-icons text-gray-400">person</span>
-                    <input type="text" id="loginUser" placeholder="Username" class="w-full bg-transparent outline-none text-gray-800 font-medium placeholder:text-gray-400">
-                </div>
-    
-                <div class="flex items-center gap-3 bg-slate-100 p-3 rounded-lg border-2 border-transparent focus-within:border-[#189e8a] focus-within:ring-2 focus-within:ring-[#189e8a]/20 transition-all duration-300">
-                    <span class="material-icons text-gray-400">lock</span>
-                    <input type="password" id="loginPass" placeholder="Password/PIN" class="w-full bg-transparent outline-none text-gray-800 font-medium placeholder:text-gray-400">
-                </div>
-    
-                <button type="submit" class="w-full py-3 font-bold bg-gradient-to-r from-[#189e8a] to-[#839e18] text-white rounded-lg hover:shadow-lg hover:shadow-teal-500/40 transition-all duration-300">Login</button>
-                <p id="loginError" class="text-red-600 text-sm mt-2 text-center font-semibold"></p>
-            </form>
-            <p class="text-center text-gray-500 text-sm pt-4">Ver 3.0.1</p>
-        </div>
+    <div class="bg-shapes">
+        <div class="shape"></div>
+        <div class="shape"></div>
+        <div class="shape"></div>
+        <div class="shape"></div>
     </div>
+
+    <div class="login-card-animation w-full max-w-md p-8 sm:p-10 space-y-6 bg-white/60 backdrop-blur-2xl border border-white/30 rounded-3xl shadow-2xl z-10">
+        
+        <div class="text-center">
+            <h2 class="text-xl font-semibold text-slate-700 mb-2">Welcome to Anodes</h2>
+            <h1 class="text-4xl font-extrabold text-slate-800">Login</h1>
+            <p class="mt-2 text-sm text-slate-500">Sign in to your account</p>
+        </div>
+        
+        <form id="loginForm" class="space-y-5">
+            <div class="relative">
+                <input type="text" id="loginUser" placeholder="Username" class="w-full pl-6 pr-12 py-3 bg-slate-100/80 border-2 border-transparent rounded-full outline-none focus:border-cyan-400 focus:ring-2 focus:ring-cyan-400/30 transition-all duration-300 font-medium text-slate-700 placeholder:text-slate-400">
+                <span class="material-icons absolute right-5 top-1/2 -translate-y-1/2 text-slate-400">person</span>
+            </div>
+
+            <div class="relative">
+                <input type="password" id="loginPass" placeholder="Password" class="w-full pl-6 pr-12 py-3 bg-slate-100/80 border-2 border-transparent rounded-full outline-none focus:border-cyan-400 focus:ring-2 focus:ring-cyan-400/30 transition-all duration-300 font-medium text-slate-700 placeholder:text-slate-400">
+                <span class="material-icons absolute right-5 top-1/2 -translate-y-1/2 text-slate-400">lock</span>
+            </div>
+
+            <button type="submit" class="w-full py-3 font-bold bg-gradient-to-r from-blue-500 to-purple-600 text-white rounded-full hover:shadow-lg hover:shadow-blue-500/40 transition-all duration-300 text-lg">SIGN IN</button>
+            <p id="loginError" class="text-red-600 text-sm !mt-3 text-center font-semibold"></p>
+        </form>
+        <p class="text-center text-gray-500/80 text-sm pt-4">Ver 3.0.1</p>
+    </div>
+</div>
 
     <div id="adminApp" class="hidden flex-col w-full h-full">
         <div class="fixed-header">
@@ -355,19 +440,26 @@ input[type="number"]::-webkit-inner-spin-button, input[type="number"]::-webkit-o
     </div>
 
     <div id="workModal" class="modal">
-        <div class="modal-content">
-            <h2 id="modalTitle" class="text-xl font-bold mb-2 text-[#189e8a]"></h2>
-            <div id="completedSummary" class="completed-summary hidden"></div>
-            <div id="qtyDetails" class="qty-widget"></div>
-            <h3 class="font-bold mt-2">History</h3>
-            <div id="historyList" class="history-widget"></div>
-            <div id="updateSection" class="flex gap-2 mt-2">
-                <input type="number" id="todayCompleted" placeholder="Today's Completed Quantity" class="flex-1">
-                <button id="updateWorkBtn" class="btn btn-primary">Update</button>
-                <button id="closeModal" class="btn btn-gray">Cancel</button>
+    <div class="modal-content">
+        <h2 id="modalTitle" class="text-xl font-bold mb-2 text-[#189e8a]"></h2>
+        <div id="completedSummary" class="completed-summary hidden"></div>
+        <div id="qtyDetails" class="qty-widget"></div>
+        
+        <h3 class="font-bold mt-4">History</h3>
+        <div id="historyList" class="history-widget"></div>
+        
+        <div id="updateSection" class="mt-4 pt-4 border-t border-slate-200 bg-slate-50 -m-6 px-6 pb-4 rounded-b-lg">
+            <label for="todayCompleted" class="block text-sm font-bold text-slate-700 mb-2">Add Today's Completed Quantity</label>
+            <div class="flex flex-col sm:flex-row gap-2">
+                <input type="number" id="todayCompleted" placeholder="Enter quantity..." class="text-lg flex-grow">
+                <button id="updateWorkBtn" class="btn btn-primary px-6">Update</button>
+            </div>
+            <div class="mt-4 text-center">
+                 <button id="closeModal" class="text-sm font-semibold text-slate-500 hover:text-slate-800 transition-colors">Close</button>
             </div>
         </div>
     </div>
+</div>
 
     <div id="historyModal" class="modal">
         <div class="modal-content">
@@ -1457,4 +1549,3 @@ allInputs.forEach(input => {
 </script>
 </body>
 </html>
-
