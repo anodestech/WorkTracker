@@ -28,25 +28,24 @@ body { font-family: 'Plus Jakarta Sans', sans-serif; background: #f1f5f9; margin
 .datetime-pill {
     background: rgba(0, 0, 0, 0.05);
     padding: 0.25rem 0.75rem;
-    border-radius: 9999px; /* Pill shape */
+    border-radius: 9999px;
     font-size: 0.875rem;
     font-weight: 600;
     color: #475569;
     white-space: nowrap;
 }
-.datetime-pill.time { /* Style for the time pill */
+.datetime-pill.time {
     font-weight: 700;
     color: #1e2937;
-    background: rgba(0, 0, 0, 0.08); /* Slightly darker bg for emphasis */
+    background: rgba(0, 0, 0, 0.08);
 }
-/* Styling for the compact month/year selectors in the admin panel */
 #monthSelector, #yearSelector, #reportMonthSelector, #reportYearSelector {
     padding: 0.375rem 0.75rem;
     padding-right: 2.25rem;
     font-size: 0.875rem;
     font-weight: 600;
     border: 1px solid #e2e8f0;
-    border-radius: 0.375rem; /* Standard rounded corners */
+    border-radius: 0.375rem;
     background-position: right 0.6rem center;
     box-shadow: 0 1px 2px 0 rgb(0 0 0 / 0.05);
     transition: all 0.2s ease-in-out;
@@ -54,7 +53,7 @@ body { font-family: 'Plus Jakarta Sans', sans-serif; background: #f1f5f9; margin
 #monthSelector:focus, #yearSelector:focus, #reportMonthSelector:focus, #reportYearSelector:focus {
     outline: none;
     border-color: #189e8a;
-    box-shadow: 0 0 0 3px rgba(24, 158, 138, 0.1); /* Adds a nice glow on click */
+    box-shadow: 0 0 0 3px rgba(24, 158, 138, 0.1);
 }
 
 @keyframes fadeIn {
@@ -102,13 +101,13 @@ body { font-family: 'Plus Jakarta Sans', sans-serif; background: #f1f5f9; margin
 .modal.show { display: flex; }
 .modal-content { background: #fff; border-radius: 0.75rem; max-width: 600px; width: 90%; padding: 1.5rem; box-shadow: 0 6px 12px rgba(0,0,0,0.2); display:flex; flex-direction:column; gap:1rem; max-height:90vh; overflow-y:auto;}
 
-/* Replacement for the main input/select style */
-input, select {
+input:not(#loginUser):not(#loginPass), 
+select {
     width: 100%; 
-    padding: 0.875rem 1.25rem; /* Balanced vertical and horizontal padding */
+    padding: 0.875rem 1.25rem;
     border: 2px solid #e5e7eb; 
     border-radius: 0.75rem;
-    font-size: 0.875rem; /* Slightly smaller font size */
+    font-size: 0.875rem;
     transition: all 0.3s ease; 
     background: white; 
     color: #1f2937;
@@ -128,9 +127,6 @@ input[type="number"]::-webkit-inner-spin-button, input[type="number"]::-webkit-o
 @keyframes slide-in { from { opacity: 0; transform: translateY(-20px); } to { opacity: 1; transform: translateY(0); } }
 .toast-gradient { background: linear-gradient(90deg, #189e8a, #839e18); }
 
-
-.history-widget { max-height:150px; overflow-y:auto; border:1px solid #ddd; padding:0.5rem; border-radius:0.5rem; background:#f9fafb; font-size:0.875rem; }
-/* Replacement for .history-widget */
 .history-widget { 
     max-height:150px; 
     overflow-y:auto; 
@@ -140,7 +136,6 @@ input[type="number"]::-webkit-inner-spin-button, input[type="number"]::-webkit-o
     background:#f8fafc;
     font-size:0.875rem; 
 }
-
 .qty-widget { background:#f0fdf4; padding:0.5rem; border-radius:0.5rem; font-weight:500; }
 .admin-section { background: white; border-radius: 1rem; padding: 1.5rem; margin: 1rem 0.5rem; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
 .table-container { overflow-x: auto; margin-top: 1rem; }
@@ -150,15 +145,12 @@ input[type="number"]::-webkit-inner-spin-button, input[type="number"]::-webkit-o
 .completed-summary { background: #dcfce7; border: 2px solid #22c55e; border-radius: 0.75rem; padding: 1rem; margin: 1rem 0; text-align: center; }
 .completed-summary .days { color: #16a34a; font-weight: 700; font-size: 1.5rem; }
 .completed-summary .rupees { color: #16a34a; font-weight: 700; font-size: 1.5rem; }
-
 #todayCompleted {
-    padding-top: 0.35rem;
-    padding-bottom: 0.35rem;
+    padding-top: 0.75rem;
+    padding-bottom: 0.75rem;
     text-align: center;
-    font-weight: 600;
+    font-weight: 700;
 }
-
-/* New styles for animated background shapes */
 .bg-shapes {
     position: absolute;
     top: 0;
@@ -166,18 +158,16 @@ input[type="number"]::-webkit-inner-spin-button, input[type="number"]::-webkit-o
     width: 100%;
     height: 100%;
     overflow: hidden;
-    z-index: 0; /* Ensures shapes are behind the login card */
-    pointer-events: none; /* Allows clicks to pass through */
+    z-index: 0;
+    pointer-events: none;
 }
-
 .shape {
     position: absolute;
     border-radius: 50%;
     opacity: 0.6;
     animation: moveShapes 20s infinite alternate;
-    filter: blur(50px); /* Blurs the shapes to enhance glass effect */
+    filter: blur(50px);
 }
-
 .shape:nth-child(1) {
     width: 200px; height: 200px;
     background: linear-gradient(135deg, #ff7e5f, #feb47b);
@@ -202,12 +192,81 @@ input[type="number"]::-webkit-inner-spin-button, input[type="number"]::-webkit-o
     top: 20%; right: 20%;
     animation-delay: 15s;
 }
-/* Animation for shapes movement */
 @keyframes moveShapes {
     0% { transform: translate(0, 0) scale(1); }
     100% { transform: translate(20px, 30px) scale(1.05); }
 }
-
+.action-btn {
+    background: none; border: none; cursor: pointer; padding: 0.25rem;
+    border-radius: 9999px; transition: background-color 0.2s;
+}
+.action-btn:hover { background-color: rgba(0,0,0,0.1); }
+.action-btn .material-icons { font-size: 1.25rem; vertical-align: middle; }
+.inline-edit-input {
+    padding: 0.25rem 0.5rem;
+    border: 1px solid #189e8a;
+    border-radius: 0.25rem;
+    width: 100%;
+}
+.refresh-btn {
+    background: rgba(24, 158, 138, 0.1);
+    color: #189e8a;
+    border: 1px solid rgba(24, 158, 138, 0.2);
+    padding: 0.25rem;
+    border-radius: 9999px;
+    cursor: pointer;
+    transition: all 0.2s ease-in-out;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.refresh-btn:hover {
+    background: rgba(24, 158, 138, 0.2);
+    box-shadow: 0 0 0 3px rgba(24, 158, 138, 0.1);
+}
+.refresh-btn .material-icons {
+    font-size: 1.25rem;
+}
+.spinning {
+    animation: spin 1s linear infinite;
+}
+@keyframes spin {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+}
+.success-checkmark {
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+    display: block;
+    stroke-width: 4;
+    stroke: #fff;
+    stroke-miterlimit: 10;
+    box-shadow: inset 0px 0px 0px #fff;
+    animation: scale .3s ease-in-out .9s both;
+}
+.success-checkmark__circle {
+    stroke-dasharray: 166;
+    stroke-dashoffset: 166;
+    stroke-width: 4;
+    stroke-miterlimit: 10;
+    stroke: #fff;
+    fill: none;
+    animation: stroke 0.6s cubic-bezier(0.65, 0, 0.45, 1) forwards;
+}
+.success-checkmark__check {
+    transform-origin: 50% 50%;
+    stroke-dasharray: 48;
+    stroke-dashoffset: 48;
+    animation: stroke 0.3s cubic-bezier(0.65, 0, 0.45, 1) 0.8s forwards;
+}
+@keyframes stroke {
+    100% { stroke-dashoffset: 0; }
+}
+@keyframes scale {
+    0%, 100% { transform: none; }
+    50% { transform: scale3d(1.1, 1.1, 1); }
+}
 </style>
 </head>
 <body>
@@ -215,33 +274,27 @@ input[type="number"]::-webkit-inner-spin-button, input[type="number"]::-webkit-o
 <div id="app" class="flex flex-col">
 
 <div id="loginScreen" class="flex flex-col items-center justify-center min-h-screen w-full bg-gradient-to-br from-cyan-200 via-blue-300 to-purple-400 p-4 relative">
-    
     <div class="bg-shapes">
         <div class="shape"></div>
         <div class="shape"></div>
         <div class="shape"></div>
         <div class="shape"></div>
     </div>
-
     <div class="login-card-animation w-full max-w-md p-8 sm:p-10 space-y-6 bg-white/60 backdrop-blur-2xl border border-white/30 rounded-3xl shadow-2xl z-10">
-        
         <div class="text-center">
             <h2 class="text-xl font-semibold text-slate-700 mb-2">Welcome to Anodes</h2>
             <h1 class="text-4xl font-extrabold text-slate-800">Login</h1>
             <p class="mt-2 text-sm text-slate-500">Sign in to your account</p>
         </div>
-        
         <form id="loginForm" class="space-y-5">
             <div class="relative">
                 <input type="text" id="loginUser" placeholder="Username" class="w-full pl-6 pr-12 py-3 bg-slate-100/80 border-2 border-transparent rounded-full outline-none focus:border-cyan-400 focus:ring-2 focus:ring-cyan-400/30 transition-all duration-300 font-medium text-slate-700 placeholder:text-slate-400">
                 <span class="material-icons absolute right-5 top-1/2 -translate-y-1/2 text-slate-400">person</span>
             </div>
-
             <div class="relative">
                 <input type="password" id="loginPass" placeholder="Password" class="w-full pl-6 pr-12 py-3 bg-slate-100/80 border-2 border-transparent rounded-full outline-none focus:border-cyan-400 focus:ring-2 focus:ring-cyan-400/30 transition-all duration-300 font-medium text-slate-700 placeholder:text-slate-400">
                 <span class="material-icons absolute right-5 top-1/2 -translate-y-1/2 text-slate-400">lock</span>
             </div>
-
             <button type="submit" class="w-full py-3 font-bold bg-gradient-to-r from-blue-500 to-purple-600 text-white rounded-full hover:shadow-lg hover:shadow-blue-500/40 transition-all duration-300 text-lg">SIGN IN</button>
             <p id="loginError" class="text-red-600 text-sm !mt-3 text-center font-semibold"></p>
         </form>
@@ -249,207 +302,205 @@ input[type="number"]::-webkit-inner-spin-button, input[type="number"]::-webkit-o
     </div>
 </div>
 
-    <div id="adminApp" class="hidden flex-col w-full h-full">
-        <div class="fixed-header">
-            <h1>Admin Dashboard</h1>
-            <div class="flex items-center gap-4">
-                <div class="flex items-center gap-2">
-                    <span id="date-display-admin" class="datetime-pill"></span>
-                    <span id="time-display-admin" class="datetime-pill time"></span>
+<div id="adminApp" class="hidden flex-col w-full h-full">
+    <div class="fixed-header">
+        <h1>Admin Dashboard</h1>
+        <div class="flex items-center gap-4">
+            <div class="flex items-center gap-2">
+                <span id="date-display-admin" class="datetime-pill"></span>
+                <span id="time-display-admin" class="datetime-pill time"></span>
+            </div>
+            <button id="adminRefreshBtn" class="refresh-btn" onclick="refreshData()">
+                <span class="material-icons">refresh</span>
+            </button>
+            <button id="adminLogoutBtn" class="btn btn-secondary hidden">Log Out</button>
+        </div>
+    </div>
+    <div id="admin-content-area" class="p-4">
+        <div class="flex gap-2 mb-4 flex-wrap">
+            <button class="btn btn-primary" onclick="showAdminSection('report')">Report</button>
+            <button class="btn btn-primary" onclick="showAdminSection('payment')">Payment</button>
+            <div class="relative">
+                <button id="manageBtn" class="btn btn-primary">
+                    <span>Manage</span>
+                    <span class="material-icons text-base">arrow_drop_down</span>
+                </button>
+                <div id="manageDropdown" class="hidden absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg z-20 ring-1 ring-black ring-opacity-5">
+                    <a href="#" onclick="showAdminSection('workorders'); closeManageDropdown(); return false;" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Work Orders</a>
+                    <a href="#" onclick="showAdminSection('products'); closeManageDropdown(); return false;" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Products</a>
+                    <a href="#" onclick="showAdminSection('users'); closeManageDropdown(); return false;" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Users</a>
+                    <hr class="my-1">
+                    <a href="#" onclick="clearData(); closeManageDropdown(); return false;" class="block px-4 py-2 text-sm font-medium text-red-600 hover:bg-red-50">
+                        <span class="material-icons text-base align-middle mr-1">delete_sweep</span>
+                        Clear Data
+                    </a>
                 </div>
-                <button id="adminLogoutBtn" class="btn btn-secondary hidden">Log Out</button>
             </div>
         </div>
-        <div id="admin-content-area" class="p-4">
-            <div class="flex gap-2 mb-4 flex-wrap">
-                <button class="btn btn-primary" onclick="showAdminSection('report')">Report</button>
-                <button class="btn btn-primary" onclick="showAdminSection('payment')">Payment</button>
-                <div class="relative">
-                    <button id="manageBtn" class="btn btn-primary">
-                        <span>Manage</span>
-                        <span class="material-icons text-base">arrow_drop_down</span>
-                    </button>
-                    <div id="manageDropdown" class="hidden absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg z-20 ring-1 ring-black ring-opacity-5">
-                        <a href="#" onclick="showAdminSection('workorders'); closeManageDropdown(); return false;" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Work Orders</a>
-                        <a href="#" onclick="showAdminSection('products'); closeManageDropdown(); return false;" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Products</a>
-                        <a href="#" onclick="showAdminSection('users'); closeManageDropdown(); return false;" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Users</a>
-                        <hr class="my-1">
-                        <a href="#" onclick="clearData(); closeManageDropdown(); return false;" class="block px-4 py-2 text-sm font-medium text-red-600 hover:bg-red-50">
-                            <span class="material-icons text-base align-middle mr-1">delete_sweep</span>
-                            Clear Data
-                        </a>
+        <div id="adminPaymentSection" class="admin-section hidden">
+            <div class="bg-slate-100 p-4 rounded-lg mb-6">
+                <div class="flex flex-wrap justify-between items-center gap-4">
+                    <h2 class="text-2xl font-bold">Monthly Payment</h2>
+                    <div class="flex gap-2 items-center">
+                        <select id="monthSelector"></select>
+                        <select id="yearSelector"></select>
                     </div>
                 </div>
             </div>
-
-            <div id="adminPaymentSection" class="admin-section hidden">
-                <div class="bg-slate-100 p-4 rounded-lg mb-6">
-                    <div class="flex flex-wrap justify-between items-center gap-4">
-                        <h2 class="text-2xl font-bold">Monthly Payment</h2>
-                        <div class="flex gap-2 items-center">
-                            <select id="monthSelector"></select>
-                            <select id="yearSelector"></select>
-                        </div>
-                    </div>
-                </div>
-                <div id="paymentCardContainer" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4"></div>
-            </div>
-
-            <div id="adminReportSection" class="admin-section hidden">
-                <div class="bg-slate-100 p-4 rounded-lg mb-6">
-                    <div class="flex flex-wrap justify-between items-start gap-4">
-                        <div>
-                            <h2 class="text-2xl font-bold">Progress Report</h2>
-                            <div id="reportGrandTotalDisplay" class="mt-2"></div>
-                        </div>
-                        <div class="flex gap-2 items-center">
-                            <select id="reportMonthSelector"></select>
-                            <select id="reportYearSelector"></select>
-                        </div>
-                    </div>
-                </div>
-                <div id="reportCardContainer" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4"></div>
-            </div>
-            
-            <div id="adminUsersSection" class="admin-section hidden">
-                <div class="bg-slate-100 p-4 rounded-lg mb-6">
-                    <h2 class="text-2xl font-bold">Manage Users</h2>
-                </div>
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
+            <div id="paymentCardContainer" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4"></div>
+        </div>
+        <div id="adminReportSection" class="admin-section hidden">
+            <div class="bg-slate-100 p-4 rounded-lg mb-6">
+                <div class="flex flex-wrap justify-between items-start gap-4">
                     <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-2">User Name</label>
-                        <input type="text" id="newUserName" placeholder="Enter user name">
+                        <h2 class="text-2xl font-bold">Progress Report</h2>
+                        <div id="reportGrandTotalDisplay" class="mt-2"></div>
                     </div>
-                    <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-2">PIN</label>
-                        <input type="text" id="newUserPin" placeholder="Enter 4-digit PIN">
+                    <div class="flex gap-2 items-center">
+                        <select id="reportMonthSelector"></select>
+                        <select id="reportYearSelector"></select>
                     </div>
-                    <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-2">UPI ID (VPA)</label>
-                        <input type="text" id="newUserUpiId" placeholder="e.g., username@okhdfcbank">
-                    </div>
-                </div>
-                <button class="btn btn-primary" onclick="createUser()">Create User</button>
-                <div class="table-container mt-6">
-                    <table class="admin-table">
-                        <thead><tr><th>Name</th><th>PIN</th><th>UPI ID</th></tr></thead>
-                        <tbody id="usersTableBody"></tbody>
-                    </table>
                 </div>
             </div>
-
-            <div id="adminProductsSection" class="admin-section hidden">
-                <div class="bg-slate-100 p-4 rounded-lg mb-6">
-                    <h2 class="text-2xl font-bold">Manage Products</h2>
+            <div id="reportCardContainer" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4"></div>
+        </div>
+        <div id="adminUsersSection" class="admin-section hidden">
+            <div class="bg-slate-100 p-4 rounded-lg mb-6">
+                <h2 class="text-2xl font-bold">Manage Users</h2>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">User Name</label>
+                    <input type="text" id="newUserName" placeholder="Enter user name">
                 </div>
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
-                    <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-2">Product Name</label>
-                        <input type="text" id="newProductName" placeholder="Enter product name">
-                    </div>
-                    <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-2">Price per Unit (₹)</label>
-                        <input type="number" id="newProductPrice" placeholder="Enter price" min="0" step="0.01">
-                    </div>
-                    <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-2">Icon Name <a href="https://fonts.google.com/icons" target="_blank" class="text-[#189e8a] text-xs">(Browse Icons)</a></label>
-                        <input type="text" id="newProductIcon" placeholder="e.g., memory, battery_charging_full">
-                    </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">PIN</label>
+                    <input type="text" id="newUserPin" placeholder="Enter 4-digit PIN">
                 </div>
-                <button class="btn btn-primary" onclick="createProduct()">Create Product</button>
-                <div class="table-container mt-6">
-                    <table class="admin-table">
-                        <thead><tr><th>Icon</th><th>Product Name</th><th>Price (₹)</th></tr></thead>
-                        <tbody id="productsTableBody"></tbody>
-                    </table>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">UPI ID (VPA)</label>
+                    <input type="text" id="newUserUpiId" placeholder="e.g., username@okhdfcbank">
                 </div>
             </div>
-
-            <div id="adminWorkOrdersSection" class="admin-section hidden">
-                <div class="bg-slate-100 p-4 rounded-lg mb-6">
-                    <h2 class="text-2xl font-bold">Manage Work Orders</h2>
+            <button class="btn btn-primary" onclick="createUser()">Create User</button>
+            <div class="table-container mt-6">
+                <table class="admin-table">
+                    <thead><tr><th>Name</th><th>PIN</th><th>UPI ID</th><th class="actions-header">Actions</th></tr></thead>
+                    <tbody id="usersTableBody"></tbody>
+                </table>
+            </div>
+        </div>
+        <div id="adminProductsSection" class="admin-section hidden">
+            <div class="bg-slate-100 p-4 rounded-lg mb-6">
+                <h2 class="text-2xl font-bold">Manage Products</h2>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Product Name</label>
+                    <input type="text" id="newProductName" placeholder="Enter product name">
                 </div>
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
-                    <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-2">Select User</label>
-                        <select id="newOrderUser"><option value="">Choose a user...</option></select>
-                    </div>
-                    <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-2">Select Product</label>
-                        <select id="newOrderProduct"><option value="">Choose a product...</option></select>
-                    </div>
-                    <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-2">Total Quantity</label>
-                        <input type="number" id="newOrderQty" placeholder="Enter quantity" min="1">
-                    </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Price per Unit (₹)</label>
+                    <input type="number" id="newProductPrice" placeholder="Enter price" min="0" step="0.01">
                 </div>
-                <button class="btn btn-primary" onclick="createWorkOrder()">Create Work Order</button>
-                <div class="table-container mt-6">
-                    <table class="admin-table">
-                        <thead><tr><th>User</th><th>Product</th><th>Total Qty</th><th>Completed</th><th>Pending</th><th>Created</th></tr></thead>
-                        <tbody id="workOrdersTableBody"></tbody>
-                    </table>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Icon Name <a href="https://fonts.google.com/icons" target="_blank" class="text-[#189e8a] text-xs">(Browse Icons)</a></label>
+                    <input type="text" id="newProductIcon" placeholder="e.g., memory, battery_charging_full">
                 </div>
+            </div>
+            <button class="btn btn-primary" onclick="createProduct()">Create Product</button>
+            <div class="table-container mt-6">
+                <table class="admin-table">
+                    <thead><tr><th>Icon</th><th>Product Name</th><th>Price (₹)</th></tr></thead>
+                    <tbody id="productsTableBody"></tbody>
+                </table>
+            </div>
+        </div>
+        <div id="adminWorkOrdersSection" class="admin-section hidden">
+            <div class="bg-slate-100 p-4 rounded-lg mb-6">
+                <h2 class="text-2xl font-bold">Manage Work Orders</h2>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Select User</label>
+                    <select id="newOrderUser"><option value="">Choose a user...</option></select>
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Select Product</label>
+                    <select id="newOrderProduct"><option value="">Choose a product...</option></select>
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Total Quantity</label>
+                    <input type="number" id="newOrderQty" placeholder="Enter quantity" min="1">
+                </div>
+            </div>
+            <button class="btn btn-primary" onclick="createWorkOrder()">Create Work Order</button>
+            <div class="table-container mt-6">
+                <table class="admin-table">
+                    <thead><tr><th>User</th><th>Product</th><th>Total Qty</th><th>Completed</th><th>Pending</th><th>Created</th><th class="actions-header">Actions</th></tr></thead>
+                    <tbody id="workOrdersTableBody"></tbody>
+                </table>
             </div>
         </div>
     </div>
+</div>
 
-    <div id="userApp" class="hidden flex-col w-full h-full">
-        <div class="fixed-header">
-            <div class="flex-grow flex items-center gap-4">
-                <h1>Anodes Work Tracker</h1>
-            </div>
+<div id="userApp" class="hidden flex-col w-full h-full">
+    <div class="fixed-header">
+        <div class="w-full flex justify-between items-center">
+            <h1>Anodes Work Tracker</h1>
             <button id="userLogoutBtn" class="btn btn-secondary hidden">Log Out</button>
-            <h2 id="greeting" class="w-full mt-2 greeting-text"></h2>
-            <div class="w-full flex items-center gap-2 mt-1">
+        </div>
+        <h2 id="greeting" class="w-full mt-2 greeting-text"></h2>
+        <div class="w-full flex justify-between items-center mt-1">
+            <div class="flex items-center gap-2">
                 <span id="date-display-user" class="datetime-pill"></span>
                 <span id="time-display-user" class="datetime-pill time"></span>
             </div>
-        </div>
-    
-        <div id="earningsCard" class="earnings-card">
-            <div class="flex justify-between items-start z-10">
-                <div class="card-chip"><div class="card-chip-line"></div></div>
-                <div class="font-bold text-lg">Anodes Pay</div>
-            </div>
-            <div class="z-10 text-center">
-                <div class="text-sm opacity-70 tracking-widest">CURRENT EARNINGS</div>
-                <div class="current-earnings" id="currentEarnings">₹0.00</div>
-            </div>
-            <div class="z-10 flex justify-between items-end">
-                <div>
-                    <div class="text-xs opacity-70">CARD HOLDER</div>
-                    <div id="cardHolderName" class="font-medium tracking-wider"></div>
-                </div>
-                <div id="estimatedEarnings" class="estimated-earnings text-right text-xs"></div>
-            </div>
-        </div>
-    
-        <div class="px-4 pb-2 flex justify-between items-center">
-            <button id="viewHistoryBtn" class="bg-white text-slate-700 shadow-sm border border-slate-200 hover:bg-slate-50 text-xs font-bold py-1 px-3 rounded-full flex items-center gap-1 transition-all duration-300">
-                <span class="material-icons text-sm">history</span>
-                View History
+            <button id="userRefreshBtn" class="refresh-btn" onclick="refreshData()">
+                <span class="material-icons">refresh</span>
             </button>
-            <div id="filterToggle" class="flex items-center bg-slate-200 p-1 rounded-full text-sm font-semibold">
-                <button id="toggleAllBtn" class="px-4 py-1 rounded-full shadow bg-white text-slate-800 transition-all duration-300">ALL</button>
-                <button id="toggleLiveBtn" class="px-4 py-1 rounded-full text-slate-500 transition-all duration-300">LIVE</button>
-            </div>
         </div>
-    
-        <div id="workOrdersGrid" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 p-4 pt-0"></div>
     </div>
+    <div id="earningsCard" class="earnings-card">
+        <div class="flex justify-between items-start z-10">
+            <div class="card-chip"><div class="card-chip-line"></div></div>
+            <div class="font-bold text-lg">Anodes Pay</div>
+        </div>
+        <div class="z-10 text-center">
+            <div class="text-sm opacity-70 tracking-widest">CURRENT EARNINGS</div>
+            <div class="current-earnings" id="currentEarnings">₹0.00</div>
+        </div>
+        <div class="z-10 flex justify-between items-end">
+            <div>
+                <div class="text-xs opacity-70">CARD HOLDER</div>
+                <div id="cardHolderName" class="font-medium tracking-wider"></div>
+            </div>
+            <div id="estimatedEarnings" class="estimated-earnings text-right text-xs"></div>
+        </div>
+    </div>
+    <div class="px-4 pb-2 flex justify-between items-center">
+        <button id="viewHistoryBtn" class="bg-white text-slate-700 shadow-sm border border-slate-200 hover:bg-slate-50 text-xs font-bold py-1 px-3 rounded-full flex items-center gap-1 transition-all duration-300">
+            <span class="material-icons text-sm">history</span>
+            View History
+        </button>
+        <div id="filterToggle" class="flex items-center bg-slate-200 p-1 rounded-full text-sm font-semibold">
+            <button id="toggleAllBtn" class="px-4 py-1 rounded-full shadow bg-white text-slate-800 transition-all duration-300">ALL</button>
+            <button id="toggleLiveBtn" class="px-4 py-1 rounded-full text-slate-500 transition-all duration-300">LIVE</button>
+        </div>
+    </div>
+    <div id="workOrdersGrid" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 p-4 pt-0"></div>
+</div>
 
-    <div id="workModal" class="modal">
+<div id="workModal" class="modal">
     <div class="modal-content">
         <h2 id="modalTitle" class="text-xl font-bold mb-2 text-[#189e8a]"></h2>
         <div id="completedSummary" class="completed-summary hidden"></div>
         <div id="qtyDetails" class="qty-widget"></div>
-        
         <h3 class="font-bold mt-4">History</h3>
         <div id="historyList" class="history-widget"></div>
-        
         <div id="updateSection" class="mt-4 pt-4 border-t border-slate-200 bg-slate-50 -m-6 px-6 pb-4 rounded-b-lg">
-            <label for="todayCompleted" class="block text-sm font-bold text-slate-700 mb-2">Add Today's Completed Quantity</label>
+            <label for="todayCompleted" class="block text-sm font-bold text-slate-700 mb-2">Add Today's Progress</label>
             <div class="flex flex-col sm:flex-row gap-2">
                 <input type="number" id="todayCompleted" placeholder="Enter quantity..." class="text-lg flex-grow">
                 <button id="updateWorkBtn" class="btn btn-primary px-6">Update</button>
@@ -461,25 +512,31 @@ input[type="number"]::-webkit-inner-spin-button, input[type="number"]::-webkit-o
     </div>
 </div>
 
-    <div id="historyModal" class="modal">
-        <div class="modal-content">
-            <div class="flex justify-between items-center mb-4">
-                <h2 class="text-xl font-bold text-[#189e8a]">Earnings History</h2>
-                <button id="closeHistoryModalBtn" class="text-gray-500 hover:text-gray-800">
-                    <span class="material-icons">close</span>
-                </button>
-            </div>
-            <div class="flex gap-2 p-3 bg-slate-100 rounded-lg">
-                <select id="historyMonthSelector" class="w-full"></select>
-            </div>
-            <div id="historyDetailsContainer" class="mt-4 min-h-[200px]">
-                <p class="text-center text-gray-500 mt-8">Please select a month and year to view details.</p>
-            </div>
+<div id="historyModal" class="modal">
+    <div class="modal-content">
+        <div class="flex justify-between items-center mb-4">
+            <h2 class="text-xl font-bold text-[#189e8a]">Earnings History</h2>
+            <button id="closeHistoryModalBtn" class="text-gray-500 hover:text-gray-800">
+                <span class="material-icons">close</span>
+            </button>
+        </div>
+        <div class="flex gap-2 p-3 bg-slate-100 rounded-lg">
+            <select id="historyMonthSelector" class="w-full"></select>
+        </div>
+        <div id="historyDetailsContainer" class="mt-4 min-h-[200px]">
+            <p class="text-center text-gray-500 mt-8">Please select a month and year to view details.</p>
         </div>
     </div>
+</div>
 
-    <div id="toastContainer"></div>
+<div id="toastContainer"></div>
 
+<div id="successModal" class="fixed inset-0 z-[200] hidden flex-col items-center justify-center bg-gradient-to-br from-teal-500 to-green-600 opacity-0 transition-opacity duration-300">
+    <svg class="success-checkmark" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 52 52">
+        <circle class="success-checkmark__circle" cx="26" cy="26" r="25" fill="none"/>
+        <path class="success-checkmark__check" fill="none" d="M14.1 27.2l7.1 7.2 16.7-16.8"/>
+    </svg>
+    <p id="successMessage" class="mt-6 text-2xl font-bold text-white text-center"></p>
 </div>
 
 <script type="module">
@@ -517,7 +574,7 @@ let isAdmin = false;
 let users = {};
 let products = {};
 let workOrders = [];
-let workOrderFilter = 'all'; 
+let workOrderFilter = 'all';
 const monthNames = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
 
 window.showAdminSection = showAdminSection;
@@ -529,6 +586,11 @@ window.clearData = clearData;
 window.closeManageDropdown = () => {
     document.getElementById('manageDropdown').classList.add('hidden');
 };
+window.deleteWorkOrder = deleteWorkOrder;
+window.editUser = editUser;
+window.saveUser = saveUser;
+window.cancelEdit = cancelEdit;
+window.refreshData = refreshData;
 
 loginForm.addEventListener('submit', async e=>{
     e.preventDefault();
@@ -1001,7 +1063,22 @@ function renderUsersTable(){
     tbody.innerHTML = '';
     Object.entries(users).forEach(([id, user]) => {
         const row = tbody.insertRow();
-        row.innerHTML = `<td>${user.name}</td><td>${user.pin}</td><td>${user.upiId || ''}</td>`;
+        row.innerHTML = `
+            <td>${user.name}</td>
+            <td id="pin-cell-${id}">${user.pin}</td>
+            <td id="upi-cell-${id}">${user.upiId || ''}</td>
+            <td class="flex items-center gap-2">
+                <button id="edit-btn-${id}" class="action-btn" onclick="editUser('${id}')">
+                    <span class="material-icons text-blue-600">edit</span>
+                </button>
+                <button id="save-btn-${id}" class="action-btn hidden" onclick="saveUser('${id}')">
+                    <span class="material-icons text-green-600">save</span>
+                </button>
+                <button id="cancel-btn-${id}" class="action-btn hidden" onclick="cancelEdit('${id}')">
+                    <span class="material-icons text-red-600">close</span>
+                </button>
+            </td>
+        `;
     });
 }
 
@@ -1083,6 +1160,11 @@ function renderWorkOrdersTable(){
             <td>${wo.completedQty || 0}</td>
             <td>${pending}</td>
             <td>${new Date(wo.createdAt).toLocaleDateString()}</td>
+            <td>
+                <button class="action-btn" onclick="deleteWorkOrder('${wo.id}')">
+                    <span class="material-icons text-red-600">delete_outline</span>
+                </button>
+            </td>
         `;
     });
 }
@@ -1298,6 +1380,7 @@ function renderHistory(wo){
     });
 }
 
+// Replacement for the updateWorkBtn click listener
 updateWorkBtn.addEventListener('click', async ()=>{
     if(!selectedWorkOrder) return;
     const increment = parseInt(todayCompleted.value);
@@ -1318,7 +1401,10 @@ updateWorkBtn.addEventListener('click', async ()=>{
     
     await update(orderRef, updateObj);
     closeWorkModal();
-    showToast(`Great job ${currentUser.name}! Daily quantity updated`);
+    
+    // --- UPDATED: Call the animation with no arguments ---
+    showSuccessAnimation();
+    
     await loadWorkOrders();
     updateEarnings();
 });
@@ -1531,21 +1617,128 @@ function updateDateTime() {
     if (timeDisplayAdmin) timeDisplayAdmin.textContent = timeString;
 }
 
+async function deleteWorkOrder(orderId) {
+    if (!confirm('Are you sure you want to permanently delete this work order?')) {
+        return;
+    }
+    try {
+        await set(ref(db, 'workOrders/' + orderId), null);
+        showToast('Work order deleted successfully.');
+        await loadWorkOrders();
+        renderWorkOrdersTable();
+    } catch (error) {
+        console.error("Error deleting work order:", error);
+        alert('Failed to delete work order.');
+    }
+}
+
+function editUser(userId) {
+    const pinCell = document.getElementById(`pin-cell-${userId}`);
+    const upiCell = document.getElementById(`upi-cell-${userId}`);
+
+    const currentPin = pinCell.textContent;
+    const currentUpi = upiCell.textContent;
+
+    pinCell.innerHTML = `<input type="text" id="pin-input-${userId}" class="inline-edit-input" value="${currentPin}">`;
+    upiCell.innerHTML = `<input type="text" id="upi-input-${userId}" class="inline-edit-input" value="${currentUpi}">`;
+
+    document.getElementById(`edit-btn-${userId}`).classList.add('hidden');
+    document.getElementById(`save-btn-${userId}`).classList.remove('hidden');
+    document.getElementById(`cancel-btn-${userId}`).classList.remove('hidden');
+}
+
+async function saveUser(userId) {
+    const newPin = document.getElementById(`pin-input-${userId}`).value.trim();
+    const newUpiId = document.getElementById(`upi-input-${userId}`).value.trim();
+
+    if (!newPin || !newUpiId) {
+        alert('PIN and UPI ID cannot be empty.');
+        return;
+    }
+
+    try {
+        await update(ref(db, `users/${userId}`), {
+            pin: newPin,
+            upiId: newUpiId
+        });
+        showToast('User details updated successfully.');
+        await loadUsers();
+        renderUsersTable();
+    } catch (error) {
+        console.error("Error updating user:", error);
+        alert('Failed to update user details.');
+    }
+}
+
+function cancelEdit(userId) {
+    renderUsersTable();
+}
+
+async function refreshData() {
+    const adminIcon = document.querySelector('#adminRefreshBtn .material-icons');
+    const userIcon = document.querySelector('#userRefreshBtn .material-icons');
+    
+    if (adminIcon) adminIcon.classList.add('spinning');
+    if (userIcon) userIcon.classList.add('spinning');
+
+    try {
+        if (isAdmin) {
+            await loadAllData();
+            const currentVisibleSection = document.querySelector('.admin-section:not(.hidden)');
+            if (currentVisibleSection) {
+                const sectionId = currentVisibleSection.id.replace('admin', '').replace('Section', '').toLowerCase();
+                showAdminSection(sectionId);
+            }
+        } else {
+            await loadProducts();
+            await loadWorkOrders();
+            updateEarnings();
+        }
+        showToast('Data refreshed');
+    } catch (error) {
+        console.error("Failed to refresh data:", error);
+        showToast('Error refreshing data!');
+    } finally {
+        if (adminIcon) adminIcon.classList.remove('spinning');
+        if (userIcon) userIcon.classList.remove('spinning');
+    }
+}
+
+// Replacement for the showSuccessAnimation function
+function showSuccessAnimation() {
+    const modal = document.getElementById('successModal');
+    const messageEl = document.getElementById('successMessage');
+
+    // --- NEW: Set the static two-line message using a <br> tag ---
+    messageEl.innerHTML = "Great Job<br>Quantity Updated Successfully";
+
+    modal.classList.remove('hidden');
+    modal.classList.add('flex');
+
+    setTimeout(() => {
+        modal.style.opacity = '1';
+    }, 10);
+
+    setTimeout(() => {
+        modal.style.opacity = '0';
+        setTimeout(() => {
+            modal.classList.add('hidden');
+            modal.classList.remove('flex');
+        }, 300);
+    }, 2500); 
+}
+
 updateDateTime();
 setInterval(updateDateTime, 1000);
 
-// --- Mobile Keyboard Fix for ALL input fields ---
 const allInputs = document.querySelectorAll('input[type="text"], input[type="password"], input[type="number"]');
-
 allInputs.forEach(input => {
     input.addEventListener('focus', (e) => {
-        // A small delay helps ensure the keyboard is fully animated before scrolling
         setTimeout(() => {
             e.target.scrollIntoView({ behavior: 'smooth', block: 'center' });
         }, 300);
     });
 });
-
 </script>
 </body>
 </html>
