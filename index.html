@@ -99,7 +99,20 @@ body { font-family: 'Plus Jakarta Sans', sans-serif; background: #f1f5f9; margin
 .product-icon .material-icons { font-size: 1.5rem; vertical-align: middle; color: #189e8a; }
 .modal { background: rgba(0,0,0,0.5); display: none; align-items: center; justify-content: center; position: fixed; inset: 0; z-index: 100; }
 .modal.show { display: flex; }
-.modal-content { background: #fff; border-radius: 0.75rem; max-width: 600px; width: 90%; padding: 1.5rem; box-shadow: 0 6px 12px rgba(0,0,0,0.2); display:flex; flex-direction:column; gap:1rem; max-height:90vh; overflow-y:auto;}
+
+/* Replacement for .modal-content */
+.modal-content { 
+    background: #fff; 
+    border-radius: 0.75rem; 
+    max-width: 600px; 
+    width: 90%; 
+    box-shadow: 0 6px 12px rgba(0,0,0,0.2); 
+    display:flex; 
+    flex-direction:column; 
+    max-height:90vh; 
+    overflow-y:auto;
+    /* Removed padding */
+}
 
 input:not(#loginUser):not(#loginPass), 
 select {
@@ -136,7 +149,46 @@ input[type="number"]::-webkit-inner-spin-button, input[type="number"]::-webkit-o
     background:#f8fafc;
     font-size:0.875rem; 
 }
-.qty-widget { background:#f0fdf4; padding:0.5rem; border-radius:0.5rem; font-weight:500; }
+
+
+/* Styling for the new quantity pills container */
+.qty-pills-container {
+    display: flex;
+    justify-content: space-around; /* Distribute pills evenly */
+    gap: 0.5rem;
+    margin-top: 0.5rem; /* Add some space above */
+    margin-bottom: 0.5rem; /* Add some space below */
+}
+/* Base style for individual quantity pills */
+.qty-pill-item {
+    padding: 0.4rem 0.8rem;
+    border-radius: 9999px; /* Pill shape */
+    font-size: 0.8rem;
+    font-weight: 700; /* Bold numbers */
+    text-align: center;
+    flex-grow: 1; /* Allow pills to grow */
+    border: 1px solid rgba(0,0,0,0.05);
+}
+/* Specific colors for each pill */
+.qty-pill-total {
+    background-color: #e0e7ff; /* Light Indigo */
+    color: #3730a3; /* Dark Indigo */
+}
+.qty-pill-completed {
+    background-color: #dcfce7; /* Light Green */
+    color: #15803d; /* Dark Green */
+}
+.qty-pill-pending {
+    background-color: #fee2e2; /* Light Red */
+    color: #b91c1c; /* Dark Red */
+}
+.qty-pill-item .label {
+    font-weight: 500; /* Medium weight for label */
+    margin-right: 0.25rem;
+    opacity: 0.8;
+}
+
+
 .admin-section { background: white; border-radius: 1rem; padding: 1.5rem; margin: 1rem 0.5rem; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
 .table-container { overflow-x: auto; margin-top: 1rem; }
 .admin-table { width: 100%; border-collapse: collapse; min-width: 600px; }
@@ -267,6 +319,142 @@ input[type="number"]::-webkit-inner-spin-button, input[type="number"]::-webkit-o
     0%, 100% { transform: none; }
     50% { transform: scale3d(1.1, 1.1, 1); }
 }
+
+/* New styles for the redesigned workModal */
+/* New styles for the redesigned workModal */
+.workModal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem 1.5rem;
+    border-bottom: 1px solid #e5e7eb;
+}
+.workModal-body {
+    padding: 1.5rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem; /* Space between elements */
+}
+.workModal-close-btn {
+    background-color: #f87171; /* Red background */
+    color: white;
+    font-weight: bold;
+    padding: 0.3rem 0.8rem;
+    border-radius: 0.5rem;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.25rem;
+    border: none;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+.workModal-close-btn:hover {
+    background-color: #ef4444; /* Darker red on hover */
+}
+.workModal-close-btn .material-icons {
+    font-size: 1.25rem;
+}
+/* Ensure history widget has correct border radius */
+.history-widget {
+    border-radius: 0.75rem !important; /* Increase rounding */
+}
+
+
+
+
+
+
+
+
+/* Update the #updateSection style */
+#updateSection { 
+    padding: 1.5rem; 
+    margin: 0; 
+    border-top: 1px solid #e5e7eb;
+    /* --- NEW: Subtle gradient background --- */
+    background: linear-gradient(to bottom, #f8fafc, #f1f5f9); 
+    border-radius: 0 0 0.75rem 0.75rem; 
+}
+
+/* Re-style the input field within the update section */
+/* New styles for the input container and input */
+.input-with-icon {
+    position: relative;
+    flex-grow: 1; /* Allow container to grow */
+}
+.input-with-icon .material-icons {
+    position: absolute;
+    left: 1rem;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #9ca3af; /* Gray icon color */
+    font-size: 1.25rem;
+}
+
+
+/* Update styles for the input (no icon) */
+#updateSection #todayCompleted {
+    border-radius: 0.5rem !important;
+    padding: 0.875rem 1rem; /* Standard padding */
+    text-align: left;
+    font-weight: 600;
+    border: 1px solid #d1d5db;
+    background-color: white;
+    font-size: 0.95rem;
+    line-height: 1.25rem;
+}
+#updateSection #todayCompleted:focus {
+     border-color: #189e8a;
+     box-shadow: 0 0 0 3px rgba(24, 158, 138, 0.1);
+}
+  
+
+
+/* Update button style */
+#updateSection #updateWorkBtn {
+     border-radius: 0.5rem !important; 
+     padding: 0.75rem 1.5rem; /* Adjust padding */
+     font-weight: 700; /* Bold text */
+     font-size: 1rem; /* Standard font size */
+     /* Ensure icon is vertically centered */
+     display: inline-flex;
+     align-items: center;
+     gap: 0.5rem;
+}
+
+
+
+/* Hide the old text close button properly */
+#updateSection .text-center { display: none; }
+
+/* Styling for the history pills */
+.history-entry {
+    display: flex;
+    gap: 0.5rem;
+    margin-bottom: 0.5rem;
+    font-size: 0.8rem;
+    font-weight: 600;
+    flex-wrap: nowrap; /* Prevent pills from wrapping */
+}
+.history-pill {
+    padding: 0.2rem 0.6rem;
+    border-radius: 9999px; /* Pill shape */
+    white-space: nowrap;
+}
+.date-pill {
+    background-color: #fed7aa; /* Light Orange */
+    color: #9a3412; /* Darker Orange text */
+}
+.time-pill {
+    background-color: #fb923c; /* Orange */
+    color: #ffffff; /* White text */
+}
+/* Updated .qty-pill style */
+.qty-pill {
+    background: linear-gradient(90deg, #189e8a, #839e18); /* Gradient from Update button */
+    color: #ffffff; /* White text */
+}
+
 </style>
 </head>
 <body>
@@ -492,25 +680,51 @@ input[type="number"]::-webkit-inner-spin-button, input[type="number"]::-webkit-o
     <div id="workOrdersGrid" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 p-4 pt-0"></div>
 </div>
 
+
 <div id="workModal" class="modal">
     <div class="modal-content">
-        <h2 id="modalTitle" class="text-xl font-bold mb-2 text-[#189e8a]"></h2>
-        <div id="completedSummary" class="completed-summary hidden"></div>
-        <div id="qtyDetails" class="qty-widget"></div>
-        <h3 class="font-bold mt-4">History</h3>
-        <div id="historyList" class="history-widget"></div>
-        <div id="updateSection" class="mt-4 pt-4 border-t border-slate-200 bg-slate-50 -m-6 px-6 pb-4 rounded-b-lg">
-            <label for="todayCompleted" class="block text-sm font-bold text-slate-700 mb-2">Add Today's Progress</label>
-            <div class="flex flex-col sm:flex-row gap-2">
-                <input type="number" id="todayCompleted" placeholder="Enter quantity..." class="text-lg flex-grow">
-                <button id="updateWorkBtn" class="btn btn-primary px-6">Update</button>
-            </div>
-            <div class="mt-4 text-center">
-                 <button id="closeModal" class="text-sm font-semibold text-slate-500 hover:text-slate-800 transition-colors">Close</button>
-            </div>
+        <div class="workModal-header">
+            <h2 id="modalTitle" class="text-xl font-bold text-[#189e8a] flex items-center gap-2">
+                {/* Content set by JS */}
+            </h2>
+            <button id="closeModal" class="workModal-close-btn">
+                 <span class="material-icons">close</span> Close
+            </button>
         </div>
+
+        <div class="workModal-body">
+            <div id="completedSummary" class="completed-summary hidden"></div>
+            
+            <h3 class="font-bold -mb-2">History</h3>
+            <div id="historyList" class="history-widget"></div>
+
+			<div id="qtyDetailsContainer" class="qty-pills-container">
+				<span id="totalQtyPill" class="qty-pill-item qty-pill-total"></span>
+				<span id="completedQtyPill" class="qty-pill-item qty-pill-completed"></span>
+				<span id="pendingQtyPill" class="qty-pill-item qty-pill-pending"></span>
+			</div>
+        </div>
+        
+
+
+<div id="updateSection">
+    <label for="todayCompleted" class="block text-sm font-bold text-slate-700 mb-2">Add Today's Progress</label>
+    <div class="flex flex-col sm:flex-row gap-3">
+        <input type="number" id="todayCompleted" placeholder="Enter quantity..." class="text-lg flex-grow">
+        <button id="updateWorkBtn" class="btn btn-primary">
+            <span class="material-icons">send</span> Update
+        </button>
+    </div>
+     <div class="mt-4 text-center">
+         <button class="text-sm font-semibold text-slate-500 hover:text-slate-800 transition-colors">Close</button>
     </div>
 </div>
+
+
+
+    </div>
+</div>
+
 
 <div id="historyModal" class="modal">
     <div class="modal-content">
@@ -536,7 +750,7 @@ input[type="number"]::-webkit-inner-spin-button, input[type="number"]::-webkit-o
         <circle class="success-checkmark__circle" cx="26" cy="26" r="25" fill="none"/>
         <path class="success-checkmark__check" fill="none" d="M14.1 27.2l7.1 7.2 16.7-16.8"/>
     </svg>
-    <p id="successMessage" class="mt-6 text-2xl font-bold text-white text-center"></p>
+    <p id="successMessage" class="mt-6 text-xl text-white text-center"></p>
 </div>
 
 <script type="module">
@@ -1326,15 +1540,27 @@ const todayCompleted = document.getElementById('todayCompleted');
 const updateWorkBtn = document.getElementById('updateWorkBtn');
 const closeModal = document.getElementById('closeModal');
 
+// Replacement for the openWorkModal function
 function openWorkModal(wo){
     selectedWorkOrder = wo;
     const isCompleted = (wo.completedQty || 0) >= wo.totalQty;
     const product = products[wo.productId];
     const icon = product?.icon || 'category';
     
+    // Set modal title (unchanged)
     modalTitle.innerHTML = `<div class="product-icon"><span class="material-icons" style="font-size: 2rem;">${icon}</span><span>${product?.name || 'Work Order'}</span></div>`;
-    qtyDetails.innerHTML = `Total Qty: ${wo.totalQty} | Completed: ${wo.completedQty||0} | Pending: ${wo.totalQty-(wo.completedQty||0)}`;
     
+    // --- NEW: Populate the individual quantity pills ---
+    const totalQty = wo.totalQty;
+    const completedQty = wo.completedQty || 0;
+    const pendingQty = totalQty - completedQty;
+
+    document.getElementById('totalQtyPill').innerHTML = `<span class="label">Total:</span>${totalQty}`;
+    document.getElementById('completedQtyPill').innerHTML = `<span class="label">Done:</span>${completedQty}`;
+    document.getElementById('pendingQtyPill').innerHTML = `<span class="label">Left:</span>${pendingQty}`;
+    // --- END OF NEW LOGIC ---
+    
+    // Show/hide completion summary and update section (unchanged)
     if(isCompleted){
         const createdDate = new Date(wo.createdAt);
         const updatedDate = new Date(wo.updatedAt);
@@ -1346,16 +1572,18 @@ function openWorkModal(wo){
         updateSection.classList.add('hidden');
         todayCompleted.disabled = true;
         updateWorkBtn.disabled = true;
+        document.getElementById('qtyDetailsContainer').style.display = 'none'; // Hide pills if completed
     } else {
         completedSummaryEl.classList.add('hidden');
         updateSection.classList.remove('hidden');
         todayCompleted.disabled = false;
         updateWorkBtn.disabled = false;
+        document.getElementById('qtyDetailsContainer').style.display = 'flex'; // Show pills if not completed
     }
     
     todayCompleted.value='';
-    renderHistory(wo);
-    workModal.classList.add('show');
+    renderHistory(wo); // Render history (unchanged)
+    workModal.classList.add('show'); // Show modal (unchanged)
 }
 
 function closeWorkModal(){
@@ -1367,16 +1595,38 @@ function closeWorkModal(){
 closeModal.addEventListener('click', closeWorkModal);
 workModal.addEventListener('click', (e)=>{ if(e.target === workModal) closeWorkModal(); });
 
+// Replacement for the renderHistory function
 function renderHistory(wo){
-    historyList.innerHTML='';
+    const historyList = document.getElementById('historyList');
+    historyList.innerHTML=''; // Clear previous entries
+    
     if(!wo.history || wo.history.length === 0){
-        historyList.innerHTML = '<p class="text-gray-500 text-sm">No history yet</p>';
+        historyList.innerHTML = '<p class="text-center text-gray-500 text-sm py-4">No history yet</p>';
         return;
     }
+
+    // Options for date and time formatting
+    const dateOptions = { day: '2-digit', month: '2-digit', year: '2-digit' }; // DD/MM/YY
+    const timeOptions = { hour: '2-digit', minute: '2-digit', hour12: true }; // HH:MM AM/PM
+
+    // Process entries in reverse chronological order (newest first)
     wo.history.slice().reverse().forEach(entry=>{
-        const div = document.createElement('div');
-        div.textContent = `${new Date(entry.timestamp).toLocaleString()}: +${entry.completed} units`;
-        historyList.appendChild(div);
+        const entryDate = new Date(entry.timestamp);
+        
+        // Format the parts
+        const dateStr = entryDate.toLocaleDateString('en-GB', dateOptions); // British English format DD/MM/YY
+        const timeStr = entryDate.toLocaleTimeString('en-US', timeOptions); // US English for AM/PM format
+        const qtyStr = `+${entry.completed} nos`;
+
+        // Create the pill elements
+        const entryDiv = document.createElement('div');
+        entryDiv.className = 'history-entry';
+        entryDiv.innerHTML = `
+            <span class="history-pill date-pill">${dateStr}</span>
+            <span class="history-pill time-pill">${timeStr}</span>
+            <span class="history-pill qty-pill">${qtyStr}</span>
+        `;
+        historyList.appendChild(entryDiv);
     });
 }
 
@@ -1709,8 +1959,12 @@ function showSuccessAnimation() {
     const modal = document.getElementById('successModal');
     const messageEl = document.getElementById('successMessage');
 
-    // --- NEW: Set the static two-line message using a <br> tag ---
-    messageEl.innerHTML = "Great Job<br>Quantity Updated Successfully";
+    // --- NEW: Use spans to style each line differently ---
+    messageEl.innerHTML = `
+        <span class="font-bold">Great Job</span>
+        <br>
+        <span class="text-white/80 text-base font-medium">Quantity Updated Successfully</span>
+    `;
 
     modal.classList.remove('hidden');
     modal.classList.add('flex');
